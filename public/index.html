@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Alebanda - Il Gioco Musicale</title>
   <script src="/socket.io/socket.io.js"></script>
+  <!-- Carica l'API IFrame di YouTube -->
+  <script src="https://www.youtube.com/iframe_api"></script>
   <style>
     :root {
       --bg: #0f172a;
@@ -80,9 +82,17 @@
     }
     .buzzer-btn:active { transform: translateY(8px); box-shadow: 0 4px 0 #7f1d1d; }
     .buzzer-btn.disabled { opacity: 0.4; pointer-events: none; filter: grayscale(1); }
+
+    /* Player YouTube Nascosto */
+    #yt-player-container { display: none; }
   </style>
 </head>
 <body>
+
+  <!-- Elemento per il player YouTube invisibile -->
+  <div id="yt-player-container">
+    <div id="yt-player"></div>
+  </div>
 
   <!-- 1. HOMEPAGE -->
   <div id="homeScreen" class="screen active">
@@ -168,9 +178,9 @@
       <div class="game-box">
         <h3 style="margin-bottom: 0.5rem;">Info di Gioco</h3>
         <p style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.5;">
-          1. Clicca su <strong>Estrai Canzone Casuale</strong> per selezionare un nuovo brano dalla Top 30.<br><br>
-          2. Usa <strong>Riproduci Snippet</strong> per far ascoltare l'anteprima.<br><br>
-          3. Il primo giocatore che preme il <strong>BUZZ!</strong> sul telefono fermerà la musica e comparirà al primo posto della lista.
+          1. Clicca su <strong>Estrai Canzone Casuale</strong> per selezionare un nuovo brano da YouTube.<br><br>
+          2. Usa <strong>Riproduci Snippet</strong> per avviare l'anteprima audio.<br><br>
+          3. Quando un giocatore clicca il <strong>BUZZ!</strong>, la traccia YouTube viene stoppata all'istante.
         </p>
       </div>
 
@@ -203,10 +213,26 @@
     let myName = '';
     let hasBuzzed = false;
 
-    // Stato Audio
+    // Gestione YouTube IFrame API
+    let ytPlayer = null;
+    let isYtReady = false;
     let currentActiveSong = null;
-    let audioPlayer = new Audio();
     let snippetTimeout = null;
+
+    function onYouTubeIframeAPIReady() {
+      ytPlayer = new YT.Player('yt-player', {
+        height: '0',
+        width: '0',
+        videoId: '',
+        playerVars: {
+          'playsinline': 1,
+          'controls': 0
+        },
+        events: {
+          'onReady': () => { isYtReady = true; console.log("YouTube Player Pronto!"); }
+        }
+      });
+    }
 
     function showScreen(id) {
       document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
@@ -217,42 +243,48 @@
     function startHostView() {
       showScreen('hostScreen');
       
-      // Carica la playlist dal file songs.json
       fetch('/songs.json')
         .then(res => res.json())
         .then(songs => {
           socket.emit('loadTop30Songs', songs);
         })
-        .catch(err => console.error("Errore nel caricamento di songs.json:", err));
+        .catch(err => console.error("Errore caricamento songs.json:", err));
     }
 
     function triggerNextSong() {
-      audioPlayer.pause();
-      clearTimeout(snippetTimeout);
-      document.getElementById('btnPlayAudio').textContent = "▶️ Riproduci Snippet";
+      pauseYouTubeAudio();
       socket.emit('playNextRandomSong');
     }
 
     function toggleAudio() {
-      if (!currentActiveSong) return;
+      if (!currentActiveSong || !isYtReady) return;
 
-      if (audioPlayer.paused) {
-        audioPlayer.currentTime = currentActiveSong.startTime || 0;
-        audioPlayer.play();
-        document.getElementById('btnPlayAudio').textContent = "⏸️ Pausa";
+      const btn = document.getElementById('btnPlayAudio');
 
+      if (ytPlayer.getPlayerState() === YT.PlayerState.PLAYING) {
+        pauseYouTubeAudio();
+      } else {
+        const startTime = currentActiveSong.startTime || 0;
         const durationMs = (currentActiveSong.duration || 10) * 1000;
+
+        ytPlayer.seekTo(startTime, true);
+        ytPlayer.playVideo();
+        btn.textContent = "⏸️ Pausa";
+
         clearTimeout(snippetTimeout);
         snippetTimeout = setTimeout(() => {
-          audioPlayer.pause();
-          document.getElementById('btnPlayAudio').textContent = "▶️ Riproduci Snippet";
+          pauseYouTubeAudio();
         }, durationMs);
-
-      } else {
-        audioPlayer.pause();
-        clearTimeout(snippetTimeout);
-        document.getElementById('btnPlayAudio').textContent = "▶️ Riproduci Snippet";
       }
+    }
+
+    function pauseYouTubeAudio() {
+      if (isYtReady && ytPlayer && typeof ytPlayer.pauseVideo === 'function') {
+        ytPlayer.pauseVideo();
+      }
+      clearTimeout(snippetTimeout);
+      const btn = document.getElementById('btnPlayAudio');
+      if (btn) btn.textContent = "▶️ Riproduci Snippet";
     }
 
     function revealSong() {
@@ -305,7 +337,7 @@
         currentActiveSong = data.currentSong;
         document.getElementById('songCounter').textContent = `Canzone ${data.progressCount} di ${data.totalSongs}`;
         document.getElementById('btnPlayAudio').disabled = false;
-        audioPlayer.src = currentActiveSong.src;
+        if (isYtReady) ytPlayer.cueVideoById(currentActiveSong.youtubeId);
       }
     });
 
@@ -315,28 +347,27 @@
       document.getElementById('songSolution').textContent = "❓ ??? - ???";
       document.getElementById('btnPlayAudio').disabled = false;
       
-      audioPlayer.src = currentActiveSong.src;
+      if (isYtReady && currentActiveSong.youtubeId) {
+        ytPlayer.cueVideoById(currentActiveSong.youtubeId);
+      }
     });
 
     socket.on('top30Finished', () => {
       document.getElementById('songCounter').textContent = "🎉 TOP 30 COMPLETATA!";
       document.getElementById('songSolution').textContent = "Tutte le canzoni sono state estratte!";
       document.getElementById('btnPlayAudio').disabled = true;
-      audioPlayer.pause();
+      pauseYouTubeAudio();
     });
 
     socket.on('buzzerQueueUpdated', (queue) => {
       renderQueue(queue);
 
-      // Quando il primo giocatore si prenota, metti in pausa l'audio per permettere la risposta
-      if (queue.length === 1 && !audioPlayer.paused) {
-        audioPlayer.pause();
-        clearTimeout(snippetTimeout);
-        const btn = document.getElementById('btnPlayAudio');
-        if (btn) btn.textContent = "▶️ Riproduci Snippet";
+      // Quando un giocatore preme il buzzer, si blocca l'audio di YouTube immediatamente
+      if (queue.length === 1) {
+        pauseYouTubeAudio();
       }
 
-      // Se la coda viene azzerata, riabilita il buzzer sul telefono
+      // Se il presentatore azzera la coda, riabilita il tasto sui telefoni
       if (queue.length === 0) {
         hasBuzzed = false;
         const buzzerBtn = document.getElementById('buzzerBtn');
