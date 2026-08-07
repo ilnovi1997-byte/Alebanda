@@ -2,6 +2,7 @@ const express = require('express');
 const http = require('http');
 const { Server } = require('socket.io');
 const path = require('path');
+const os = require('os');
 
 const app = express();
 const server = http.createServer(app);
@@ -9,93 +10,126 @@ const io = new Server(server, {
   cors: { origin: "*" }
 });
 
-// Serviamo i file della grafica (HTML, CSS, JS) dalla cartella 'public'
+// Serviamo i file statici dalla cartella 'public'
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Stato del gioco in memoria
+// Stato del Gioco in Memoria
 let buzzerQueue = [];
 let scores = { A: 0, B: 0 };
-let currentSongIndex = 1;
+let songsList = [];
+let playedSongIds = [];
+let currentSong = null;
 
 io.on('connection', (socket) => {
   console.log(`🔌 Dispositivo connesso: ${socket.id}`);
 
-  // Invia subito lo stato attuale al dispositivo che si è appena connesso
+  // Stato iniziale inviato al client
   socket.emit('initGameState', {
     buzzerQueue,
     scores,
-    currentSongIndex
+    progressCount: playedSongIds.length,
+    totalSongs: songsList.length,
+    currentSong
   });
 
-  // 1. Registrazione Giocatore dal Telefono
+  // 1. REGISTRAZIONE GIOCATORE (da smartphone)
   socket.on('registerPlayer', (data) => {
-    socket.data.playerName = data.name || 'Giocatore Anonymous';
+    socket.data.playerName = data.name || 'Giocatore';
     socket.data.team = data.team; // 'Squadra Rossa' o 'Squadra Blu'
-    console.log(`👤 ${socket.data.playerName} è entrato nella ${socket.data.team}`);
+    console.log(`👤 Registrato: ${socket.data.playerName} (${socket.data.team})`);
   });
 
-  // 2. Pressione del Buzzer dal Telefono
+  // 2. PRESSIONE BUZZER (da smartphone)
   socket.on('pressBuzzer', () => {
     const team = socket.data.team || 'Senza Squadra';
     const name = socket.data.playerName || 'Giocatore';
 
-    // Controlla se questo specifico giocatore ha già premuto il buzzer in questo turno
+    // Evita prenotazioni doppie dello stesso socket
     const alreadyBuzzed = buzzerQueue.some(item => item.socketId === socket.id);
 
     if (!alreadyBuzzed) {
+      const now = new Date();
+      const timeStr = now.toLocaleTimeString('it-IT', { 
+        hour12: false, 
+        hour: '2-digit', 
+        minute: '2-digit', 
+        second: '2-digit'
+      }) + '.' + String(now.getMilliseconds()).padStart(3, '0');
+
       const buzzerEntry = {
         socketId: socket.id,
         name: name,
         team: team,
-        time: new Date().toLocaleTimeString('it-IT', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit', fractionalSecondDigits: 2 })
+        time: timeStr
       };
 
       buzzerQueue.push(buzzerEntry);
-
-      // Invia la coda aggiornata in TEMPO REALE a tutti i dispositivi connessi
       io.emit('buzzerQueueUpdated', buzzerQueue);
-      console.log(`🔔 BUZZER! #${buzzerQueue.length} - ${name} (${team})`);
+      console.log(`🔔 BUZZER! #${buzzerQueue.length} - ${name} (${team}) a ${timeStr}`);
     }
   });
 
-  // 3. COMANDI PRESENTATORE: Reset Coda Buzzer
+  // 3. CARICAMENTO LISTA TOP 30 (dallo Schermo Host)
+  socket.on('loadTop30Songs', (songs) => {
+    songsList = songs;
+    playedSongIds = [];
+    currentSong = null;
+    buzzerQueue = [];
+    
+    io.emit('top30Reset', { totalSongs: songsList.length });
+    io.emit('buzzerQueueUpdated', buzzerQueue);
+    console.log(`🎵 Caricate ${songsList.length} canzoni per la Top 30`);
+  });
+
+  // 4. ESTRAZIONE CASUALE PROSSIMA CANZONE
+  socket.on('playNextRandomSong', () => {
+    const remainingSongs = songsList.filter(song => !playedSongIds.includes(song.id));
+
+    if (remainingSongs.length === 0) {
+      io.emit('top30Finished');
+      console.log('🏆 Top 30 Completata!');
+      return;
+    }
+
+    const randomIndex = Math.floor(Math.random() * remainingSongs.length);
+    currentSong = remainingSongs[randomIndex];
+    playedSongIds.push(currentSong.id);
+
+    // Resetta automaticamente i buzzer per il nuovo turno
+    buzzerQueue = [];
+    io.emit('buzzerQueueUpdated', buzzerQueue);
+
+    io.emit('newSongExtracted', {
+      song: currentSong,
+      progressCount: playedSongIds.length,
+      totalSongs: songsList.length
+    });
+
+    console.log(`▶️ Estratta traccia #${playedSongIds.length}/${songsList.length}: ${currentSong.title}`);
+  });
+
+  // 5. RESET CODA BUZZER (Comando Host)
   socket.on('resetBuzzerQueue', () => {
     buzzerQueue = [];
     io.emit('buzzerQueueUpdated', buzzerQueue);
     console.log('🧹 Coda Buzzer azzerata dal Presentatore');
   });
 
-  // 4. COMANDI PRESENTATORE: Gestione Punteggi
+  // 6. AGGIORNAMENTO PUNTEGGI (Comando Host)
   socket.on('updateScore', ({ team, amount }) => {
     if (scores[team] !== undefined) {
       scores[team] = Math.max(0, scores[team] + amount);
       io.emit('scoreUpdated', scores);
-      console.log(`🏆 Punteggio aggiornato: Rossa ${scores.A} - Blu ${scores.B}`);
+      console.log(`🏆 Punteggi aggiornati: Rossa ${scores.A} | Blu ${scores.B}`);
     }
   });
 
-  // 5. COMANDI PRESENTATORE: Prossima Canzone Top 30
-  socket.on('nextSong', () => {
-    if (currentSongIndex < 30) {
-      currentSongIndex++;
-    } else {
-      currentSongIndex = 1; // Resetta se arrivato alla fine
-    }
-    buzzerQueue = []; // Azzera la coda per la nuova canzone
-    io.emit('buzzerQueueUpdated', buzzerQueue);
-    io.emit('songChanged', currentSongIndex);
-    console.log(`🎵 Passati alla canzone #${currentSongIndex}`);
-  });
-
-  // Disconnessione
   socket.on('disconnect', () => {
     console.log(`❌ Dispositivo disconnesso: ${socket.id}`);
   });
 });
 
-// Avvio del server sulla porta 3000
-const os = require('os');
-
+// Funzione ausiliaria per ricavare l'IP locale Wi-Fi
 function getLocalIp() {
   const interfaces = os.networkInterfaces();
   for (const name of Object.keys(interfaces)) {
@@ -112,8 +146,8 @@ const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
   const localIp = getLocalIp();
   console.log(`\n==================================================`);
-  console.log(`🚀 SERVER ALEBANDA AVVIATO!`);
-  console.log(`📺 Computer (Host): http://localhost:${PORT}`);
-  console.log(`📱 Smartphone (Wi-Fi): http://${localIp}:${PORT}`);
+  console.log(`🚀 SERVER ALEBANDA AVVIATO CON SUCCESSO!`);
+  console.log(`📺 PC / Schermo Host:   http://localhost:${PORT}`);
+  console.log(`📱 Smartphone (Wi-Fi):  http://${localIp}:${PORT}`);
   console.log(`==================================================\n`);
 });

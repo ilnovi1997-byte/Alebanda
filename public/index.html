@@ -4,18 +4,19 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Alebanda - Il Gioco Musicale</title>
-  <!-- Socket.io servito direttamente dal server Node.js -->
   <script src="/socket.io/socket.io.js"></script>
   <style>
     :root {
       --bg: #0f172a;
       --card-bg: #1e293b;
       --accent: #f59e0b;
+      --accent-hover: #d97706;
       --team-a: #ec4899;
       --team-b: #3b82f6;
       --text: #f8fafc;
       --text-muted: #94a3b8;
       --success: #10b981;
+      --error: #ef4444;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, sans-serif; }
@@ -43,15 +44,19 @@
     
     .game-box { background: var(--card-bg); padding: 1.5rem; border-radius: 16px; border: 1px solid #334155; }
     
-    /* Punteggi Squadre */
+    /* Tabellone Punteggi */
     .scoreboard { display: flex; justify-content: space-between; gap: 1rem; margin-bottom: 1.5rem; }
     .team-score { flex: 1; padding: 1rem; border-radius: 12px; text-align: center; font-weight: bold; }
     .team-a { background: rgba(236, 72, 153, 0.15); border: 2px solid var(--team-a); color: var(--team-a); }
     .team-b { background: rgba(59, 130, 246, 0.15); border: 2px solid var(--team-b); color: var(--team-b); }
     .score-num { font-size: 2.5rem; margin: 0.5rem 0; color: #fff; }
     
-    .btn-score { background: #334155; color: #fff; border: none; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer; font-size: 1rem; font-weight: bold; margin: 0 2px; }
-    .btn-score:hover { background: #475569; }
+    .btn-score { background: #334155; color: #fff; border: none; padding: 0.6rem 1.2rem; border-radius: 8px; cursor: pointer; font-size: 0.95rem; font-weight: bold; margin: 2px; transition: background 0.2s; }
+    .btn-score:hover:not(:disabled) { background: #475569; }
+    .btn-score:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    /* Panel Audio & Soluzione */
+    .audio-panel { background: #0f172a; padding: 1.5rem; border-radius: 12px; text-align: center; margin-bottom: 1.5rem; border: 1px solid #334155; }
 
     /* Coda Buzzer */
     .buzzer-queue { margin-top: 1rem; }
@@ -74,7 +79,7 @@
       transition: all 0.1s ease;
     }
     .buzzer-btn:active { transform: translateY(8px); box-shadow: 0 4px 0 #7f1d1d; }
-    .buzzer-btn.disabled { opacity: 0.5; pointer-events: none; filter: grayscale(1); }
+    .buzzer-btn.disabled { opacity: 0.4; pointer-events: none; filter: grayscale(1); }
   </style>
 </head>
 <body>
@@ -87,7 +92,7 @@
     <div class="role-selection">
       <div class="role-card" onclick="startHostView()">
         <h3>📺 Schermo / Host</h3>
-        <p>Mostra i punteggi, la coda del buzzer e controlla il gioco sul maxischermo.</p>
+        <p>Mostra i punteggi, controlla le canzoni ed evidenzia le prenotazioni sul maxischermo.</p>
       </div>
       <div class="role-card" onclick="showScreen('playerSetupScreen')">
         <h3>📱 Giocatore</h3>
@@ -100,11 +105,11 @@
   <div id="hostScreen" class="screen">
     <div class="main-dashboard">
       
-      <!-- Lato Sinistro: Tabellone & Coda Buzzer -->
+      <!-- Lato Sinistro: Tabellone, Player Audio & Buzzer -->
       <div class="game-box">
         <h2 style="margin-bottom: 1rem; color: var(--accent);">Fase 1: TOP 30</h2>
         
-        <!-- Tabellone Punteggi -->
+        <!-- Punteggi Squadre -->
         <div class="scoreboard">
           <div class="team-score team-a">
             <div>SQUADRA ROSSA</div>
@@ -124,10 +129,27 @@
           </div>
         </div>
 
-        <!-- Controlli Presentatore -->
-        <div style="background: #0f172a; padding: 1rem; border-radius: 8px; text-align: center; margin-bottom: 1.5rem;">
-          <p id="songCounter" style="color: var(--text-muted); margin-bottom: 0.5rem; font-weight: bold;">Canzone #1 di 30</p>
-          <button class="btn-score" style="padding: 0.8rem 1.5rem; background: var(--accent); color: black; font-weight: bold;" onclick="nextSong()">▶️ Prossima Canzone</button>
+        <!-- Pannello Controllo Audio Top 30 -->
+        <div class="audio-panel">
+          <p id="songCounter" style="color: var(--text-muted); font-size: 1.1rem; font-weight: bold; margin-bottom: 0.5rem;">
+            Top 30: In attesa dell'avvio...
+          </p>
+          
+          <h2 id="songSolution" style="margin: 1rem 0; color: var(--accent); letter-spacing: 1px;">
+            ❓ ??? - ???
+          </h2>
+
+          <div style="display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;">
+            <button class="btn-score" style="background: var(--accent); color: black;" onclick="triggerNextSong()">
+              🎲 Estrai Canzone Casuale
+            </button>
+            <button class="btn-score" id="btnPlayAudio" onclick="toggleAudio()" disabled>
+              ▶️ Riproduci Snippet
+            </button>
+            <button class="btn-score" style="background: var(--success);" onclick="revealSong()">
+              👁️ Rivela Titolo
+            </button>
+          </div>
         </div>
 
         <!-- Coda di Prenotazione Buzzer -->
@@ -142,11 +164,13 @@
         </div>
       </div>
 
-      <!-- Lato Destro: Pannello Info -->
+      <!-- Lato Destro: Istruzioni / Info -->
       <div class="game-box">
-        <h3 style="margin-bottom: 0.5rem;">Istruzioni</h3>
-        <p style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.4;">
-          Fai collegare i giocatori al sito con il proprio smartphone. Quando qualcuno preme il buzzer, comparirà immediatamente nella lista qui a fianco con l'ordine esatto di arrivo.
+        <h3 style="margin-bottom: 0.5rem;">Info di Gioco</h3>
+        <p style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.5;">
+          1. Clicca su <strong>Estrai Canzone Casuale</strong> per selezionare un nuovo brano dalla Top 30.<br><br>
+          2. Usa <strong>Riproduci Snippet</strong> per far ascoltare l'anteprima.<br><br>
+          3. Il primo giocatore che preme il <strong>BUZZ!</strong> sul telefono fermerà la musica e comparirà al primo posto della lista.
         </p>
       </div>
 
@@ -173,23 +197,79 @@
   </div>
 
   <script>
-    // Connessione WebSocket a Socket.io
     const socket = io();
 
     let myTeam = '';
     let myName = '';
     let hasBuzzed = false;
 
+    // Stato Audio
+    let currentActiveSong = null;
+    let audioPlayer = new Audio();
+    let snippetTimeout = null;
+
     function showScreen(id) {
       document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
       document.getElementById(id).classList.add('active');
     }
 
+    // --- LOGICA HOST ---
     function startHostView() {
       showScreen('hostScreen');
+      
+      // Carica la playlist dal file songs.json
+      fetch('/songs.json')
+        .then(res => res.json())
+        .then(songs => {
+          socket.emit('loadTop30Songs', songs);
+        })
+        .catch(err => console.error("Errore nel caricamento di songs.json:", err));
     }
 
-    // Registrazione Giocatore
+    function triggerNextSong() {
+      audioPlayer.pause();
+      clearTimeout(snippetTimeout);
+      document.getElementById('btnPlayAudio').textContent = "▶️ Riproduci Snippet";
+      socket.emit('playNextRandomSong');
+    }
+
+    function toggleAudio() {
+      if (!currentActiveSong) return;
+
+      if (audioPlayer.paused) {
+        audioPlayer.currentTime = currentActiveSong.startTime || 0;
+        audioPlayer.play();
+        document.getElementById('btnPlayAudio').textContent = "⏸️ Pausa";
+
+        const durationMs = (currentActiveSong.duration || 10) * 1000;
+        clearTimeout(snippetTimeout);
+        snippetTimeout = setTimeout(() => {
+          audioPlayer.pause();
+          document.getElementById('btnPlayAudio').textContent = "▶️ Riproduci Snippet";
+        }, durationMs);
+
+      } else {
+        audioPlayer.pause();
+        clearTimeout(snippetTimeout);
+        document.getElementById('btnPlayAudio').textContent = "▶️ Riproduci Snippet";
+      }
+    }
+
+    function revealSong() {
+      if (currentActiveSong) {
+        document.getElementById('songSolution').textContent = `🎵 ${currentActiveSong.title} - ${currentActiveSong.artist}`;
+      }
+    }
+
+    function updateScore(team, amount) {
+      socket.emit('updateScore', { team, amount });
+    }
+
+    function resetBuzzerQueue() {
+      socket.emit('resetBuzzerQueue');
+    }
+
+    // --- LOGICA GIOCATORE ---
     function joinTeam(teamCode) {
       const nameInput = document.getElementById('playerNameInput').value.trim();
       if (!nameInput) {
@@ -202,12 +282,11 @@
 
       socket.emit('registerPlayer', { name: myName, team: myTeam });
 
-      document.getElementById('playerInfoDisplay').textContent = myName;
+      document.getElementById('playerInfoDisplay').textContent = `${myName} (${myTeam})`;
       document.getElementById('playerInfoDisplay').style.color = teamCode === 'A' ? 'var(--team-a)' : 'var(--team-b)';
       showScreen('playerBuzzerScreen');
     }
 
-    // Pressione del Buzzer
     function pressBuzzer() {
       if (hasBuzzed) return;
       socket.emit('pressBuzzer');
@@ -217,20 +296,47 @@
       document.getElementById('playerStatus').style.color = 'var(--success)';
     }
 
-    // --- RICEZIONE EVENTI DAL SERVER ---
+    // --- RICEZIONE EVENTI SOCKET.IO ---
 
-    // Ricezione stato iniziale
     socket.on('initGameState', (data) => {
       updateScoreboard(data.scores);
-      document.getElementById('songCounter').textContent = `Canzone #${data.currentSongIndex} di 30`;
       renderQueue(data.buzzerQueue);
+      if (data.currentSong) {
+        currentActiveSong = data.currentSong;
+        document.getElementById('songCounter').textContent = `Canzone ${data.progressCount} di ${data.totalSongs}`;
+        document.getElementById('btnPlayAudio').disabled = false;
+        audioPlayer.src = currentActiveSong.src;
+      }
     });
 
-    // Aggiornamento coda dei buzzer
+    socket.on('newSongExtracted', (data) => {
+      currentActiveSong = data.song;
+      document.getElementById('songCounter').textContent = `Canzone ${data.progressCount} di ${data.totalSongs}`;
+      document.getElementById('songSolution').textContent = "❓ ??? - ???";
+      document.getElementById('btnPlayAudio').disabled = false;
+      
+      audioPlayer.src = currentActiveSong.src;
+    });
+
+    socket.on('top30Finished', () => {
+      document.getElementById('songCounter').textContent = "🎉 TOP 30 COMPLETATA!";
+      document.getElementById('songSolution').textContent = "Tutte le canzoni sono state estratte!";
+      document.getElementById('btnPlayAudio').disabled = true;
+      audioPlayer.pause();
+    });
+
     socket.on('buzzerQueueUpdated', (queue) => {
       renderQueue(queue);
 
-      // Se la coda è stata azzerata, riabilita il buzzer per il giocatore
+      // Quando il primo giocatore si prenota, metti in pausa l'audio per permettere la risposta
+      if (queue.length === 1 && !audioPlayer.paused) {
+        audioPlayer.pause();
+        clearTimeout(snippetTimeout);
+        const btn = document.getElementById('btnPlayAudio');
+        if (btn) btn.textContent = "▶️ Riproduci Snippet";
+      }
+
+      // Se la coda viene azzerata, riabilita il buzzer sul telefono
       if (queue.length === 0) {
         hasBuzzed = false;
         const buzzerBtn = document.getElementById('buzzerBtn');
@@ -243,7 +349,6 @@
       }
     });
 
-    // Renderizza la lista prenotazioni sullo schermo host
     function renderQueue(queue) {
       const queueList = document.getElementById('queueList');
       if (!queueList) return;
@@ -257,14 +362,13 @@
         <div class="queue-item ${index === 0 ? 'first' : ''}">
           <div>
             <strong>#${index + 1}</strong> ${entry.name} 
-            <span style="font-size: 0.8rem; opacity: 0.8;">(${entry.team})</span>
+            <span style="font-size: 0.8rem; opacity: 0.85;">(${entry.team})</span>
           </div>
           <small style="font-weight: bold;">${entry.time}</small>
         </div>
       `).join('');
     }
 
-    // Aggiornamento Punteggio
     socket.on('scoreUpdated', (scores) => {
       updateScoreboard(scores);
     });
@@ -274,25 +378,6 @@
       const elB = document.getElementById('scoreB');
       if (elA) elA.textContent = scores.A;
       if (elB) elB.textContent = scores.B;
-    }
-
-    // Cambio Canzone
-    socket.on('songChanged', (songIndex) => {
-      const counter = document.getElementById('songCounter');
-      if (counter) counter.textContent = `Canzone #${songIndex} di 30`;
-    });
-
-    // COMANDI INVIATI DALL'HOST AL SERVER
-    function updateScore(team, amount) {
-      socket.emit('updateScore', { team, amount });
-    }
-
-    function resetBuzzerQueue() {
-      socket.emit('resetBuzzerQueue');
-    }
-
-    function nextSong() {
-      socket.emit('nextSong');
     }
   </script>
 </body>
