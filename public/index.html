@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Alebanda - Il Gioco Musicale</title>
   <script src="/socket.io/socket.io.js"></script>
-  <!-- Carica l'API IFrame di YouTube -->
+  <!-- YouTube IFrame API -->
   <script src="https://www.youtube.com/iframe_api"></script>
   <style>
     :root {
@@ -65,7 +65,36 @@
     .queue-item { display: flex; justify-content: space-between; align-items: center; padding: 0.8rem 1rem; background: #0f172a; border-radius: 8px; margin-bottom: 0.5rem; border-left: 5px solid var(--accent); }
     .queue-item.first { border-left-color: var(--success); background: #064e3b; }
 
-    /* 3. SCHERMATA GIOCATORE (MOBILE) */
+    /* 3. SCHERMATA CATEGORIE (FASE 2) */
+    .category-card {
+      background: var(--card-bg);
+      border: 2px solid #334155;
+      border-radius: 14px;
+      padding: 1.5rem 1rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+    .category-card:hover:not(.disabled) {
+      border-color: var(--accent);
+      transform: translateY(-5px);
+      background: #283548;
+    }
+    .category-card.disabled {
+      opacity: 0.35;
+      filter: grayscale(1);
+      cursor: not-allowed;
+      border-color: #1e293b;
+    }
+    .category-icon { font-size: 2.5rem; }
+    .category-name { font-size: 1.1rem; font-weight: bold; color: #fff; }
+
+    /* 4. SCHERMATA GIOCATORE (MOBILE) */
     .mobile-container { width: 100%; max-width: 400px; text-align: center; }
     .team-select-btn { width: 100%; padding: 1.2rem; border-radius: 12px; border: none; font-size: 1.2rem; font-weight: bold; color: white; margin-bottom: 1rem; cursor: pointer; transition: transform 0.1s; }
     .team-select-btn:active { transform: scale(0.98); }
@@ -111,11 +140,11 @@
     </div>
   </div>
 
-  <!-- 2. SCHERMO PRINCIPALE / HOST -->
+  <!-- 2. SCHERMO PRINCIPALE / HOST (FASE 1: TOP 30) -->
   <div id="hostScreen" class="screen">
     <div class="main-dashboard">
       
-      <!-- Lato Sinistro: Tabellone, Player Audio & Buzzer -->
+      <!-- Lato Sinistro: Tabellone, Player Audio & Coda Buzzer -->
       <div class="game-box">
         <h2 style="margin-bottom: 1rem; color: var(--accent);">Fase 1: TOP 30</h2>
         
@@ -172,6 +201,11 @@
             <p style="color: var(--text-muted); font-style: italic;">In attesa che qualcuno prema il buzzer...</p>
           </div>
         </div>
+
+        <!-- Pulsante per la Fase 2 (compare quando finisce la Top 30) -->
+        <button id="btnGoToPhase2" class="btn-score" style="background: var(--accent); color: black; display: none; margin-top: 1.5rem; width: 100%; font-size: 1.1rem; padding: 1rem;" onclick="goToPhase2()">
+          🚀 Passa alla Fase 2: Selezione Categorie
+        </button>
       </div>
 
       <!-- Lato Destro: Istruzioni / Info -->
@@ -180,14 +214,28 @@
         <p style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.5;">
           1. Clicca su <strong>Estrai Canzone Casuale</strong> per selezionare un nuovo brano da YouTube.<br><br>
           2. Usa <strong>Riproduci Snippet</strong> per avviare l'anteprima audio.<br><br>
-          3. Quando un giocatore clicca il <strong>BUZZ!</strong>, la traccia YouTube viene stoppata all'istante.
+          3. Quando un giocatore clicca il <strong>BUZZ!</strong>, la traccia YouTube viene stoppata all'istante.<br><br>
+          4. Al termine delle 30 canzoni comparirà il pulsante per accedere alle 10 Categorie!
         </p>
       </div>
 
     </div>
   </div>
 
-  <!-- 3. SELEZIONE SQUADRA E NOME GIOCATORE -->
+  <!-- 3. SCHERMATA FASE 2: SELEZIONE CATEGORIE -->
+  <div id="categoriesScreen" class="screen">
+    <div style="width: 100%; max-width: 1000px; text-align: center;">
+      <h1 style="color: var(--accent); font-size: 2.5rem; margin-bottom: 0.5rem;">FASE 2: SCEGLI LA CATEGORIA</h1>
+      <p style="color: var(--text-muted); margin-bottom: 2rem;">Seleziona una delle 10 categorie disponibili per iniziare il nuovo round</p>
+      
+      <!-- Griglia delle 10 Categorie -->
+      <div id="categoriesGrid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1.2rem;">
+        <!-- Generate dinamicamente via JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. SELEZIONE SQUADRA E NOME GIOCATORE -->
   <div id="playerSetupScreen" class="screen">
     <div class="mobile-container">
       <h2 style="margin-bottom: 1.5rem;">Entra in Gioco</h2>
@@ -197,7 +245,7 @@
     </div>
   </div>
 
-  <!-- 4. SCHERMATA BUZZER GIOCATORE -->
+  <!-- 5. SCHERMATA BUZZER GIOCATORE -->
   <div id="playerBuzzerScreen" class="screen">
     <div class="mobile-container">
       <h2 id="playerInfoDisplay" style="margin-bottom: 0.5rem;"></h2>
@@ -218,6 +266,9 @@
     let isYtReady = false;
     let currentActiveSong = null;
     let snippetTimeout = null;
+
+    // Gestione Categorie
+    let categoriesData = [];
 
     function onYouTubeIframeAPIReady() {
       ytPlayer = new YT.Player('yt-player', {
@@ -301,6 +352,42 @@
       socket.emit('resetBuzzerQueue');
     }
 
+    // --- LOGICA FASE 2: CATEGORIE ---
+    function goToPhase2() {
+      socket.emit('startPhase2');
+    }
+
+    function loadCategories() {
+      fetch('/categories.json')
+        .then(res => res.json())
+        .then(categories => {
+          categoriesData = categories;
+          renderCategories([]);
+        });
+    }
+
+    function renderCategories(disabledIds = []) {
+      const grid = document.getElementById('categoriesGrid');
+      if (!grid) return;
+
+      grid.innerHTML = categoriesData.map(cat => {
+        const isDisabled = disabledIds.includes(cat.id);
+        return `
+          <div class="category-card ${isDisabled ? 'disabled' : ''}" onclick="pickCategory(${cat.id}, ${isDisabled})">
+            <div class="category-icon">${cat.icon}</div>
+            <div class="category-name">${cat.name}</div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function pickCategory(id, isDisabled) {
+      if (isDisabled) return;
+      socket.emit('selectCategory', id);
+      const cat = categoriesData.find(c => c.id === id);
+      alert(`Hai selezionato la categoria: ${cat.name}`);
+    }
+
     // --- LOGICA GIOCATORE ---
     function joinTeam(teamCode) {
       const nameInput = document.getElementById('playerNameInput').value.trim();
@@ -357,17 +444,30 @@
       document.getElementById('songSolution').textContent = "Tutte le canzoni sono state estratte!";
       document.getElementById('btnPlayAudio').disabled = true;
       pauseYouTubeAudio();
+
+      // Mostra il pulsante per accedere alla Fase 2
+      const btnPhase2 = document.getElementById('btnGoToPhase2');
+      if (btnPhase2) btnPhase2.style.display = 'block';
+    });
+
+    socket.on('phase2Started', () => {
+      loadCategories();
+      showScreen('categoriesScreen');
+    });
+
+    socket.on('categoryUpdated', (data) => {
+      renderCategories(data.selectedCategories);
     });
 
     socket.on('buzzerQueueUpdated', (queue) => {
       renderQueue(queue);
 
-      // Quando un giocatore preme il buzzer, si blocca l'audio di YouTube immediatamente
+      // Blocca l'audio di YouTube quando si prenota il primo giocatore
       if (queue.length === 1) {
         pauseYouTubeAudio();
       }
 
-      // Se il presentatore azzera la coda, riabilita il tasto sui telefoni
+      // Se la coda si azzera, riabilita il pulsante sui telefoni
       if (queue.length === 0) {
         hasBuzzed = false;
         const buzzerBtn = document.getElementById('buzzerBtn');
