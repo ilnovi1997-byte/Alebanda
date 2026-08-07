@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Alebanda - Il Gioco Musicale</title>
+  <!-- Socket.io servito direttamente dal server Node.js -->
+  <script src="/socket.io/socket.io.js"></script>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card-bg: #1e293b;
+      --accent: #f59e0b;
+      --team-a: #ec4899;
+      --team-b: #3b82f6;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --success: #10b981;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, sans-serif; }
+    body { background-color: var(--bg); color: var(--text); min-height: 100vh; display: flex; flex-direction: column; }
+
+    /* Navigazione Schermate */
+    .screen { display: none; padding: 2rem; flex: 1; width: 100%; }
+    .screen.active { display: flex; flex-direction: column; align-items: center; justify-content: center; }
+
+    /* 1. HOMEPAGE */
+    .brand-title { font-size: 3.5rem; font-weight: 900; color: var(--accent); text-transform: uppercase; letter-spacing: 2px; text-shadow: 0 0 20px rgba(245, 158, 11, 0.4); margin-bottom: 0.5rem; text-align: center; }
+    .brand-subtitle { font-size: 1.2rem; color: var(--text-muted); margin-bottom: 2.5rem; text-align: center; }
+    
+    .role-selection { display: flex; gap: 1.5rem; flex-wrap: wrap; justify-content: center; }
+    .role-card { background: var(--card-bg); border: 2px solid #334155; padding: 2rem; border-radius: 16px; width: 260px; text-align: center; cursor: pointer; transition: all 0.2s ease; }
+    .role-card:hover { border-color: var(--accent); transform: translateY(-4px); }
+    .role-card h3 { font-size: 1.4rem; margin-bottom: 0.5rem; color: #fff; }
+    .role-card p { font-size: 0.9rem; color: var(--text-muted); }
+
+    /* 2. SCHERMO PRINCIPALE / HOST */
+    .main-dashboard { width: 100%; max-width: 1000px; display: grid; grid-template-columns: 1fr; gap: 1.5rem; }
+    @media (min-width: 768px) {
+      .main-dashboard { grid-template-columns: 2fr 1fr; }
+    }
+    
+    .game-box { background: var(--card-bg); padding: 1.5rem; border-radius: 16px; border: 1px solid #334155; }
+    
+    /* Punteggi Squadre */
+    .scoreboard { display: flex; justify-content: space-between; gap: 1rem; margin-bottom: 1.5rem; }
+    .team-score { flex: 1; padding: 1rem; border-radius: 12px; text-align: center; font-weight: bold; }
+    .team-a { background: rgba(236, 72, 153, 0.15); border: 2px solid var(--team-a); color: var(--team-a); }
+    .team-b { background: rgba(59, 130, 246, 0.15); border: 2px solid var(--team-b); color: var(--team-b); }
+    .score-num { font-size: 2.5rem; margin: 0.5rem 0; color: #fff; }
+    
+    .btn-score { background: #334155; color: #fff; border: none; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer; font-size: 1rem; font-weight: bold; margin: 0 2px; }
+    .btn-score:hover { background: #475569; }
+
+    /* Coda Buzzer */
+    .buzzer-queue { margin-top: 1rem; }
+    .queue-item { display: flex; justify-content: space-between; align-items: center; padding: 0.8rem 1rem; background: #0f172a; border-radius: 8px; margin-bottom: 0.5rem; border-left: 5px solid var(--accent); }
+    .queue-item.first { border-left-color: var(--success); background: #064e3b; }
+
+    /* 3. SCHERMATA GIOCATORE (MOBILE) */
+    .mobile-container { width: 100%; max-width: 400px; text-align: center; }
+    .team-select-btn { width: 100%; padding: 1.2rem; border-radius: 12px; border: none; font-size: 1.2rem; font-weight: bold; color: white; margin-bottom: 1rem; cursor: pointer; transition: transform 0.1s; }
+    .team-select-btn:active { transform: scale(0.98); }
+    
+    .buzzer-btn {
+      width: 220px; height: 220px; border-radius: 50%; border: 8px solid #991b1b;
+      background: radial-gradient(circle, #ef4444 0%, #dc2626 100%);
+      color: white; font-size: 1.8rem; font-weight: 900;
+      box-shadow: 0 12px 0 #7f1d1d, 0 15px 25px rgba(0,0,0,0.5);
+      cursor: pointer;
+      margin: 2rem auto; display: flex; align-items: center; justify-content: center;
+      user-select: none; -webkit-tap-highlight-color: transparent;
+      transition: all 0.1s ease;
+    }
+    .buzzer-btn:active { transform: translateY(8px); box-shadow: 0 4px 0 #7f1d1d; }
+    .buzzer-btn.disabled { opacity: 0.5; pointer-events: none; filter: grayscale(1); }
+  </style>
+</head>
+<body>
+
+  <!-- 1. HOMEPAGE -->
+  <div id="homeScreen" class="screen active">
+    <h1 class="brand-title">ALEBANDA</h1>
+    <p class="brand-subtitle">La sfida musicale a squadre</p>
+    
+    <div class="role-selection">
+      <div class="role-card" onclick="startHostView()">
+        <h3>📺 Schermo / Host</h3>
+        <p>Mostra i punteggi, la coda del buzzer e controlla il gioco sul maxischermo.</p>
+      </div>
+      <div class="role-card" onclick="showScreen('playerSetupScreen')">
+        <h3>📱 Giocatore</h3>
+        <p>Scegli la tua squadra, inserisci il tuo nome e usa lo smartphone come buzzer.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. SCHERMO PRINCIPALE / HOST -->
+  <div id="hostScreen" class="screen">
+    <div class="main-dashboard">
+      
+      <!-- Lato Sinistro: Tabellone & Coda Buzzer -->
+      <div class="game-box">
+        <h2 style="margin-bottom: 1rem; color: var(--accent);">Fase 1: TOP 30</h2>
+        
+        <!-- Tabellone Punteggi -->
+        <div class="scoreboard">
+          <div class="team-score team-a">
+            <div>SQUADRA ROSSA</div>
+            <div class="score-num" id="scoreA">0</div>
+            <div>
+              <button class="btn-score" onclick="updateScore('A', -1)">-1</button>
+              <button class="btn-score" onclick="updateScore('A', 1)">+1</button>
+            </div>
+          </div>
+          <div class="team-score team-b">
+            <div>SQUADRA BLU</div>
+            <div class="score-num" id="scoreB">0</div>
+            <div>
+              <button class="btn-score" onclick="updateScore('B', -1)">-1</button>
+              <button class="btn-score" onclick="updateScore('B', 1)">+1</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Controlli Presentatore -->
+        <div style="background: #0f172a; padding: 1rem; border-radius: 8px; text-align: center; margin-bottom: 1.5rem;">
+          <p id="songCounter" style="color: var(--text-muted); margin-bottom: 0.5rem; font-weight: bold;">Canzone #1 di 30</p>
+          <button class="btn-score" style="padding: 0.8rem 1.5rem; background: var(--accent); color: black; font-weight: bold;" onclick="nextSong()">▶️ Prossima Canzone</button>
+        </div>
+
+        <!-- Coda di Prenotazione Buzzer -->
+        <div class="buzzer-queue">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+            <h3>Ordini di Prenotazione:</h3>
+            <button class="btn-score" style="font-size: 0.8rem;" onclick="resetBuzzerQueue()">🔄 Resetta Coda</button>
+          </div>
+          <div id="queueList">
+            <p style="color: var(--text-muted); font-style: italic;">In attesa che qualcuno prema il buzzer...</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Lato Destro: Pannello Info -->
+      <div class="game-box">
+        <h3 style="margin-bottom: 0.5rem;">Istruzioni</h3>
+        <p style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.4;">
+          Fai collegare i giocatori al sito con il proprio smartphone. Quando qualcuno preme il buzzer, comparirà immediatamente nella lista qui a fianco con l'ordine esatto di arrivo.
+        </p>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 3. SELEZIONE SQUADRA E NOME GIOCATORE -->
+  <div id="playerSetupScreen" class="screen">
+    <div class="mobile-container">
+      <h2 style="margin-bottom: 1.5rem;">Entra in Gioco</h2>
+      <input type="text" id="playerNameInput" placeholder="Inserisci il tuo nome" style="width: 100%; padding: 0.9rem; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: white; font-size: 1rem; margin-bottom: 1.5rem; text-align: center;">
+      <button class="team-select-btn" style="background: var(--team-a);" onclick="joinTeam('A')">Entra nei ROSSI</button>
+      <button class="team-select-btn" style="background: var(--team-b);" onclick="joinTeam('B')">Entra nei BLU</button>
+    </div>
+  </div>
+
+  <!-- 4. SCHERMATA BUZZER GIOCATORE -->
+  <div id="playerBuzzerScreen" class="screen">
+    <div class="mobile-container">
+      <h2 id="playerInfoDisplay" style="margin-bottom: 0.5rem;"></h2>
+      <p id="playerStatus" style="color: var(--text-muted); font-size: 0.9rem;">Pronto per il buzzer!</p>
+      <div class="buzzer-btn" id="buzzerBtn" onclick="pressBuzzer()">BUZZ!</div>
+    </div>
+  </div>
+
+  <script>
+    // Connessione WebSocket a Socket.io
+    const socket = io();
+
+    let myTeam = '';
+    let myName = '';
+    let hasBuzzed = false;
+
+    function showScreen(id) {
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+    }
+
+    function startHostView() {
+      showScreen('hostScreen');
+    }
+
+    // Registrazione Giocatore
+    function joinTeam(teamCode) {
+      const nameInput = document.getElementById('playerNameInput').value.trim();
+      if (!nameInput) {
+        alert("Inserisci il tuo nome prima di scegliere la squadra!");
+        return;
+      }
+
+      myName = nameInput;
+      myTeam = teamCode === 'A' ? 'Squadra Rossa' : 'Squadra Blu';
+
+      socket.emit('registerPlayer', { name: myName, team: myTeam });
+
+      document.getElementById('playerInfoDisplay').textContent = myName;
+      document.getElementById('playerInfoDisplay').style.color = teamCode === 'A' ? 'var(--team-a)' : 'var(--team-b)';
+      showScreen('playerBuzzerScreen');
+    }
+
+    // Pressione del Buzzer
+    function pressBuzzer() {
+      if (hasBuzzed) return;
+      socket.emit('pressBuzzer');
+      hasBuzzed = true;
+      document.getElementById('buzzerBtn').classList.add('disabled');
+      document.getElementById('playerStatus').textContent = 'Ti sei prenotato!';
+      document.getElementById('playerStatus').style.color = 'var(--success)';
+    }
+
+    // --- RICEZIONE EVENTI DAL SERVER ---
+
+    // Ricezione stato iniziale
+    socket.on('initGameState', (data) => {
+      updateScoreboard(data.scores);
+      document.getElementById('songCounter').textContent = `Canzone #${data.currentSongIndex} di 30`;
+      renderQueue(data.buzzerQueue);
+    });
+
+    // Aggiornamento coda dei buzzer
+    socket.on('buzzerQueueUpdated', (queue) => {
+      renderQueue(queue);
+
+      // Se la coda è stata azzerata, riabilita il buzzer per il giocatore
+      if (queue.length === 0) {
+        hasBuzzed = false;
+        const buzzerBtn = document.getElementById('buzzerBtn');
+        if (buzzerBtn) buzzerBtn.classList.remove('disabled');
+        const status = document.getElementById('playerStatus');
+        if (status) {
+          status.textContent = 'Pronto per il buzzer!';
+          status.style.color = 'var(--text-muted)';
+        }
+      }
+    });
+
+    // Renderizza la lista prenotazioni sullo schermo host
+    function renderQueue(queue) {
+      const queueList = document.getElementById('queueList');
+      if (!queueList) return;
+
+      if (queue.length === 0) {
+        queueList.innerHTML = '<p style="color: var(--text-muted); font-style: italic;">In attesa che qualcuno prema il buzzer...</p>';
+        return;
+      }
+
+      queueList.innerHTML = queue.map((entry, index) => `
+        <div class="queue-item ${index === 0 ? 'first' : ''}">
+          <div>
+            <strong>#${index + 1}</strong> ${entry.name} 
+            <span style="font-size: 0.8rem; opacity: 0.8;">(${entry.team})</span>
+          </div>
+          <small style="font-weight: bold;">${entry.time}</small>
+        </div>
+      `).join('');
+    }
+
+    // Aggiornamento Punteggio
+    socket.on('scoreUpdated', (scores) => {
+      updateScoreboard(scores);
+    });
+
+    function updateScoreboard(scores) {
+      const elA = document.getElementById('scoreA');
+      const elB = document.getElementById('scoreB');
+      if (elA) elA.textContent = scores.A;
+      if (elB) elB.textContent = scores.B;
+    }
+
+    // Cambio Canzone
+    socket.on('songChanged', (songIndex) => {
+      const counter = document.getElementById('songCounter');
+      if (counter) counter.textContent = `Canzone #${songIndex} di 30`;
+    });
+
+    // COMANDI INVIATI DALL'HOST AL SERVER
+    function updateScore(team, amount) {
+      socket.emit('updateScore', { team, amount });
+    }
+
+    function resetBuzzerQueue() {
+      socket.emit('resetBuzzerQueue');
+    }
+
+    function nextSong() {
+      socket.emit('nextSong');
+    }
+  </script>
+</body>
+</html>
