@@ -1,12 +1,26 @@
 [
-  { "id": 1, "name": "Pop Italiani anni '90", "icon": "📻" },
-  { "id": 2, "name": "Sigle dei Cartoni Animati", "icon": "👾" },
-  { "id": 3, "name": "Tormentoni Estivi", "icon": "🏖️" },
-  { "id": 4, "name": "Colonne Sonore Cinema", "icon": "🎬" },
-  { "id": 5, "name": "Rock Internazionale", "icon": "🎸" },
-  { "id": 6, "name": "Festival di Sanremo", "icon": "💐" },
-  { "id": 7, "name": "Hip Hop & Trap", "icon": "🎤" },
-  { "id": 8, "name": "Anni '80 Cult", "icon": "🕺" },
-  { "id": 9, "name": "Canzoni d'Amore", "icon": "❤️" },
-  { "id": 10, "name": "Musica Latina", "icon": "💃" }
+  {
+    "id": 1,
+    "name": "Pop Italiani anni '90",
+    "icon": "📻",
+    "songs": [
+      { "id": 101, "title": "50 Special", "artist": "Lùnapop", "youtubeId": "zF____9iI-Q", "startTime": 15, "duration": 10 },
+      { "id": 102, "title": "Mare Mare", "artist": "Luca Carboni", "youtubeId": "L3wKzyIN1yk", "startTime": 10, "duration": 10 },
+      { "id": 103, "title": "Laura non c'è", "artist": "Nek", "youtubeId": "t46S3sP6_1M", "startTime": 20, "duration": 10 },
+      { "id": 104, "title": "Hanno ucciso l'Uomo Ragno", "artist": "883", "youtubeId": "zF____9iI-Q", "startTime": 5, "duration": 10 },
+      { "id": 105, "title": "La solitudine", "artist": "Laura Pausini", "youtubeId": "L3wKzyIN1yk", "startTime": 12, "duration": 10 }
+    ]
+  },
+  {
+    "id": 2,
+    "name": "Sigle dei Cartoni Animati",
+    "icon": "👾",
+    "songs": [
+      { "id": 201, "title": "Dragon Ball", "artist": "Giorgio Vanni", "youtubeId": "t46S3sP6_1M", "startTime": 10, "duration": 10 },
+      { "id": 202, "title": "Pokémon", "artist": "Giorgio Vanni", "youtubeId": "zF____9iI-Q", "startTime": 5, "duration": 10 },
+      { "id": 203, "title": "Lupin III", "artist": "Castellina Pasi", "youtubeId": "L3wKzyIN1yk", "startTime": 15, "duration": 10 },
+      { "id": 204, "title": "Detective Conan", "artist": "Giorgio Vanni", "youtubeId": "t46S3sP6_1M", "startTime": 10, "duration": 10 },
+      { "id": 205, "title": "One Piece", "artist": "Giorgio Vanni", "youtubeId": "zF____9iI-Q", "startTime": 8, "duration": 10 }
+    ]
+  }
 ]
