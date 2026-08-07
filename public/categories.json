@@ -1,0 +1,12 @@
+[
+  { "id": 1, "name": "Pop Italiani anni '90", "icon": "📻" },
+  { "id": 2, "name": "Sigle dei Cartoni Animati", "icon": "👾" },
+  { "id": 3, "name": "Tormentoni Estivi", "icon": "🏖️" },
+  { "id": 4, "name": "Colonne Sonore Cinema", "icon": "🎬" },
+  { "id": 5, "name": "Rock Internazionale", "icon": "🎸" },
+  { "id": 6, "name": "Festival di Sanremo", "icon": "💐" },
+  { "id": 7, "name": "Hip Hop & Trap", "icon": "🎤" },
+  { "id": 8, "name": "Anni '80 Cult", "icon": "🕺" },
+  { "id": 9, "name": "Canzoni d'Amore", "icon": "❤️" },
+  { "id": 10, "name": "Musica Latina", "icon": "💃" }
+]

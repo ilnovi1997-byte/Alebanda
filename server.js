@@ -19,6 +19,7 @@ let scores = { A: 0, B: 0 };
 let songsList = [];
 let playedSongIds = [];
 let currentSong = null;
+let selectedCategories = [];
 
 io.on('connection', (socket) => {
   console.log(`🔌 Dispositivo connesso: ${socket.id}`);
@@ -29,7 +30,8 @@ io.on('connection', (socket) => {
     scores,
     progressCount: playedSongIds.length,
     totalSongs: songsList.length,
-    currentSong
+    currentSong,
+    selectedCategories
   });
 
   // 1. REGISTRAZIONE GIOCATORE (da smartphone)
@@ -69,7 +71,7 @@ io.on('connection', (socket) => {
     }
   });
 
-  // 3. CARICAMENTO LISTA TOP 30 (dallo Schermo Host)
+  // 3. FASE 1: CARICAMENTO LISTA TOP 30 (dallo Schermo Host)
   socket.on('loadTop30Songs', (songs) => {
     songsList = songs;
     playedSongIds = [];
@@ -81,7 +83,7 @@ io.on('connection', (socket) => {
     console.log(`🎵 Caricate ${songsList.length} canzoni per la Top 30`);
   });
 
-  // 4. ESTRAZIONE CASUALE PROSSIMA CANZONE
+  // 4. FASE 1: ESTRAZIONE CASUALE PROSSIMA CANZONE
   socket.on('playNextRandomSong', () => {
     const remainingSongs = songsList.filter(song => !playedSongIds.includes(song.id));
 
@@ -124,12 +126,33 @@ io.on('connection', (socket) => {
     }
   });
 
+  // 7. FASE 2: AVVIO SELEZIONE CATEGORIE
+  socket.on('startPhase2', () => {
+    io.emit('phase2Started');
+    console.log('🚀 Iniziata la Fase 2: Selezione Categorie!');
+  });
+
+  // 8. FASE 2: SELEZIONE CATEGORIA
+  socket.on('selectCategory', (categoryId) => {
+    if (!selectedCategories.includes(categoryId)) {
+      selectedCategories.push(categoryId);
+      io.emit('categoryUpdated', { categoryId, selectedCategories });
+      console.log(`📁 Categoria #${categoryId} selezionata`);
+    }
+  });
+
+  // 9. FASE 2: RESET CATEGORIE
+  socket.on('resetCategories', () => {
+    selectedCategories = [];
+    io.emit('categoryUpdated', { categoryId: null, selectedCategories: [] });
+  });
+
   socket.on('disconnect', () => {
     console.log(`❌ Dispositivo disconnesso: ${socket.id}`);
   });
 });
 
-// Funzione ausiliaria per ricavare l'IP locale Wi-Fi
+// Funzione per ricavare l'IP locale della rete Wi-Fi
 function getLocalIp() {
   const interfaces = os.networkInterfaces();
   for (const name of Object.keys(interfaces)) {
