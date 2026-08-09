@@ -216,7 +216,6 @@ io.on("connection", (socket) => {
   // 10. FASE 2: USO / RIATTIVAZIONE BONUS E MALUS (Toggle ON/OFF)
   socket.on("usePerk", ({ team, type, index }) => {
     if (perksState[team] && perksState[team][type] !== undefined) {
-      // Inverte lo stato per permettere la riattivazione se già cliccato
       perksState[team][type][index] = !perksState[team][type][index];
 
       io.emit("perkUpdated", perksState);
@@ -238,6 +237,35 @@ io.on("connection", (socket) => {
 
   socket.on("triggerTimerStop", () => {
     io.emit("stopTimerOnClients");
+  });
+
+  // 12. RESET COMPLETO DI TUTTA LA PARTITA
+  socket.on("resetFullGame", () => {
+    scores = { A: 0, B: 0 };
+    playedSongIds = [];
+    currentSong = null;
+    selectedCategories = [];
+    turnIndex = 0;
+    turnPattern = [];
+    buzzerQueue = [];
+
+    perksState = {
+      A: {
+        bonus: [false, false, false, false],
+        malus: [false, false, false, false],
+      },
+      B: {
+        bonus: [false, false, false, false],
+        malus: [false, false, false, false],
+      },
+    };
+
+    io.emit("gameResetCompleted", {
+      scores,
+      perksState,
+    });
+
+    console.log("🧹 PARTITA COMPLETAMENTE AZZERATA DALL'HOST!");
   });
 
   socket.on("disconnect", () => {

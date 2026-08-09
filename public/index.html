@@ -184,6 +184,11 @@
         <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 0.5rem; line-height: 1.5;">
           I giocatori usano il pulsante BUZZ! per prenotarsi.<br>Il primo che clicca ferma l'audio!
         </p>
+
+        <!-- Pulsante Reset Completo -->
+        <button class="btn-score" style="background: var(--error); color: white; width: 100%; margin-top: 2rem; padding: 0.8rem;" onclick="resetFullGame()">
+          ⚠️ Azzera Partita e Ricomincia
+        </button>
       </div>
     </div>
   </div>
@@ -259,6 +264,11 @@
             <button class="btn-perk malus" id="perk_B_malus_3" onclick="usePerk('B','malus',3)">4/5</button>
           </div>
         </div>
+
+        <!-- Pulsante Reset Completo -->
+        <button class="btn-score" style="background: var(--error); color: white; width: 100%; margin-top: 1.5rem; padding: 0.8rem;" onclick="resetFullGame()">
+          ⚠️ Azzera Partita e Ricomincia
+        </button>
       </div>
     </div>
   </div>
@@ -371,7 +381,6 @@
 
       </div>
 
-      <!-- Pulsante per disconnettersi / cambiare profilo -->
       <button onclick="leavePlayerSession()" style="background: transparent; color: var(--text-muted); border: none; font-size: 0.8rem; text-decoration: underline; margin-top: 1.5rem; cursor: pointer;">
         🚪 Cambia Nome / Squadra
       </button>
@@ -404,7 +413,7 @@
     let timeLeft = 5;
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
-    // Controls se c'è un giocatore registrato in localStorage al caricamento della pagina
+    // Ripristina sessione salvata
     window.addEventListener('DOMContentLoaded', () => {
       const savedName = localStorage.getItem('alebanda_playerName');
       const savedTeam = localStorage.getItem('alebanda_playerTeam');
@@ -412,8 +421,6 @@
       if (savedName && savedTeam) {
         myName = savedName;
         myTeam = savedTeam;
-        
-        // Re-registra il giocatore sul server via socket
         socket.emit('registerPlayer', { name: myName, team: myTeam });
 
         document.getElementById('playerInfoDisplay').textContent = `${myName} (${myTeam})`;
@@ -512,6 +519,13 @@
       fetch('/categories.json')
         .then(res => res.json())
         .then(cats => { categoriesData = cats; });
+    }
+
+    // --- RESET TOTALE DALL'HOST ---
+    function resetFullGame() {
+      if (confirm("Sei sicuro di voler azzerare tutti i punteggi, le categorie e ricominciare da capo?")) {
+        socket.emit('resetFullGame');
+      }
     }
 
     // --- CONTROLLI AUDIO ---
@@ -687,7 +701,6 @@
       myName = nameInput;
       myTeam = teamCode === 'A' ? 'Squadra Rossa' : 'Squadra Blu';
 
-      // Salva nel localStorage per sopravvivere a ricaricamenti/chiusura della scheda
       localStorage.setItem('alebanda_playerName', myName);
       localStorage.setItem('alebanda_playerTeam', myTeam);
 
@@ -699,7 +712,6 @@
     }
 
     function leavePlayerSession() {
-      // Disconnette la sessione salvata
       localStorage.removeItem('alebanda_playerName');
       localStorage.removeItem('alebanda_playerTeam');
       myName = '';
@@ -753,7 +765,6 @@
       renderQueue(data.buzzerQueue);
       latestPerksState = data.perksState;
 
-      // Se la Fase 2 è già iniziata e un giocatore si riconnette, ripristina la visualizzazione della Fase 2 sul telefono
       if (data.selectedCategories && data.selectedCategories.length > 0) {
         isPhase2Active = true;
         const buzzerBtn = document.getElementById('buzzerBtn');
@@ -888,6 +899,39 @@
     });
 
     socket.on('scoreUpdated', (scores) => updateScoreboard(scores));
+
+    // EVENTO RESET COMPLETO
+    socket.on('gameResetCompleted', (data) => {
+      isPhase2Active = false;
+      hasBuzzed = false;
+      currentActiveSong = null;
+      currentCategory = null;
+      stopTimerManual();
+      pauseYouTubeAudio();
+
+      localStorage.removeItem('alebanda_playerName');
+      localStorage.removeItem('alebanda_playerTeam');
+      myName = '';
+      myTeam = '';
+
+      updateScoreboard(data.scores);
+      
+      const buzzerBtn = document.getElementById('buzzerBtn');
+      if (buzzerBtn) {
+        buzzerBtn.style.display = 'flex';
+        buzzerBtn.classList.remove('disabled');
+      }
+
+      const p2Panel = document.getElementById('playerPhase2Panel');
+      if (p2Panel) p2Panel.style.display = 'none';
+
+      const btnPhase2 = document.getElementById('btnGoToPhase2');
+      if (btnPhase2) btnPhase2.style.display = 'none';
+
+      showScreen('homeScreen');
+
+      alert("La partita è stata azzerata! È possibile iniziare una nuova partita.");
+    });
   </script>
 </body>
 </html>
