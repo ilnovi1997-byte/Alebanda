@@ -75,7 +75,6 @@
     .btn-perk { border: none; padding: 0.4rem 0.6rem; border-radius: 6px; font-weight: bold; font-size: 0.75rem; cursor: pointer; color: white; transition: all 0.2s; }
     .btn-perk.bonus { background: #10b981; }
     .btn-perk.malus { background: #ef4444; }
-    /* Disattivato visivamente ma sempre cliccabile dall'Host per riattivarlo */
     .btn-perk.used { opacity: 0.3; text-decoration: line-through; filter: grayscale(0.8); }
 
     .song-row { background: #0f172a; padding: 0.8rem 1rem; border-radius: 10px; margin-bottom: 0.8rem; border: 1px solid #334155; display: flex; justify-content: space-between; align-items: center; }
@@ -325,7 +324,7 @@
   <!-- 6. DISPLAY GIOCATORE -->
   <div id="playerBuzzerScreen" class="screen">
     <div class="mobile-container">
-      <h2 id="playerInfoDisplay" style="margin-bottom: 0.5rem;"></h2>
+      <h2 id="playerInfoDisplay" style="margin-bottom: 0.2rem;"></h2>
       <p id="playerStatus" style="color: var(--text-muted); font-size: 0.9rem;">Pronto per il gioco!</p>
 
       <div class="buzzer-btn" id="buzzerBtn" onclick="pressBuzzer()">BUZZ!</div>
@@ -336,21 +335,21 @@
       </div>
 
       <!-- PANNELLO BONUS & MALUS DETTAGLIATO SMARTPHONE -->
-      <div id="playerPhase2Panel" style="display: none; background: #1e293b; border-radius: 12px; padding: 1rem; margin-top: 1.5rem; border: 1px solid #334155; text-align: left;">
-        <div style="text-align: center; margin-bottom: 1rem; padding-bottom: 0.8rem; border-bottom: 1px solid #334155;">
+      <div id="playerPhase2Panel" style="display: none; background: #1e293b; border-radius: 12px; padding: 1rem; margin-top: 1rem; border: 1px solid #334155; text-align: left;">
+        <div style="text-align: center; margin-bottom: 0.8rem; padding-bottom: 0.6rem; border-bottom: 1px solid #334155;">
           <span style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase;">Categoria Attiva:</span>
           <h3 id="mobileActiveCategory" style="color: var(--accent); margin-top: 2px;">In attesa di selezione...</h3>
         </div>
 
         <!-- Propria Squadra -->
-        <div style="margin-bottom: 1rem;">
-          <div id="labelMyTeamPerks" style="font-size: 0.85rem; font-weight: bold; margin-bottom: 0.4rem; color: var(--accent);">LA TUA SQUADRA</div>
+        <div style="margin-bottom: 0.8rem;">
+          <div id="labelMyTeamPerks" style="font-size: 0.85rem; font-weight: bold; margin-bottom: 0.3rem; color: var(--accent);">LA TUA SQUADRA</div>
           
-          <div style="background: #0f172a; padding: 0.6rem; border-radius: 8px; margin-bottom: 4px;">
+          <div style="background: #0f172a; padding: 0.5rem; border-radius: 8px; margin-bottom: 4px;">
             <span style="font-size: 0.75rem; color: var(--success); font-weight: bold; display: block; margin-bottom: 2px;">BONUS:</span>
             <div id="myTeamBonusBadges"></div>
           </div>
-          <div style="background: #0f172a; padding: 0.6rem; border-radius: 8px;">
+          <div style="background: #0f172a; padding: 0.5rem; border-radius: 8px;">
             <span style="font-size: 0.75rem; color: var(--error); font-weight: bold; display: block; margin-bottom: 2px;">MALUS:</span>
             <div id="myTeamMalusBadges"></div>
           </div>
@@ -358,19 +357,24 @@
 
         <!-- Squadra Avversaria -->
         <div>
-          <div id="labelOppTeamPerks" style="font-size: 0.85rem; font-weight: bold; margin-bottom: 0.4rem; color: var(--text-muted);">SQUADRA AVVERSARIA</div>
+          <div id="labelOppTeamPerks" style="font-size: 0.85rem; font-weight: bold; margin-bottom: 0.3rem; color: var(--text-muted);">SQUADRA AVVERSARIA</div>
           
-          <div style="background: #0f172a; padding: 0.6rem; border-radius: 8px; margin-bottom: 4px;">
+          <div style="background: #0f172a; padding: 0.5rem; border-radius: 8px; margin-bottom: 4px;">
             <span style="font-size: 0.75rem; color: var(--success); font-weight: bold; display: block; margin-bottom: 2px;">BONUS:</span>
             <div id="oppTeamBonusBadges"></div>
           </div>
-          <div style="background: #0f172a; padding: 0.6rem; border-radius: 8px;">
+          <div style="background: #0f172a; padding: 0.5rem; border-radius: 8px;">
             <span style="font-size: 0.75rem; color: var(--error); font-weight: bold; display: block; margin-bottom: 2px;">MALUS:</span>
             <div id="oppTeamMalusBadges"></div>
           </div>
         </div>
 
       </div>
+
+      <!-- Pulsante per disconnettersi / cambiare profilo -->
+      <button onclick="leavePlayerSession()" style="background: transparent; color: var(--text-muted); border: none; font-size: 0.8rem; text-decoration: underline; margin-top: 1.5rem; cursor: pointer;">
+        🚪 Cambia Nome / Squadra
+      </button>
 
     </div>
   </div>
@@ -399,6 +403,24 @@
     let answerTimer = null;
     let timeLeft = 5;
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+    // Controls se c'è un giocatore registrato in localStorage al caricamento della pagina
+    window.addEventListener('DOMContentLoaded', () => {
+      const savedName = localStorage.getItem('alebanda_playerName');
+      const savedTeam = localStorage.getItem('alebanda_playerTeam');
+
+      if (savedName && savedTeam) {
+        myName = savedName;
+        myTeam = savedTeam;
+        
+        // Re-registra il giocatore sul server via socket
+        socket.emit('registerPlayer', { name: myName, team: myTeam });
+
+        document.getElementById('playerInfoDisplay').textContent = `${myName} (${myTeam})`;
+        document.getElementById('playerInfoDisplay').style.color = myTeam.includes('Rossa') ? 'var(--team-a)' : 'var(--team-b)';
+        showScreen('playerBuzzerScreen');
+      }
+    });
 
     function playBeepSound(frequency = 880, duration = 0.15, type = 'sine') {
       try {
@@ -664,11 +686,25 @@
 
       myName = nameInput;
       myTeam = teamCode === 'A' ? 'Squadra Rossa' : 'Squadra Blu';
+
+      // Salva nel localStorage per sopravvivere a ricaricamenti/chiusura della scheda
+      localStorage.setItem('alebanda_playerName', myName);
+      localStorage.setItem('alebanda_playerTeam', myTeam);
+
       socket.emit('registerPlayer', { name: myName, team: myTeam });
 
       document.getElementById('playerInfoDisplay').textContent = `${myName} (${myTeam})`;
       document.getElementById('playerInfoDisplay').style.color = teamCode === 'A' ? 'var(--team-a)' : 'var(--team-b)';
       showScreen('playerBuzzerScreen');
+    }
+
+    function leavePlayerSession() {
+      // Disconnette la sessione salvata
+      localStorage.removeItem('alebanda_playerName');
+      localStorage.removeItem('alebanda_playerTeam');
+      myName = '';
+      myTeam = '';
+      showScreen('homeScreen');
     }
 
     function pressBuzzer() {
@@ -716,6 +752,22 @@
       updateScoreboard(data.scores);
       renderQueue(data.buzzerQueue);
       latestPerksState = data.perksState;
+
+      // Se la Fase 2 è già iniziata e un giocatore si riconnette, ripristina la visualizzazione della Fase 2 sul telefono
+      if (data.selectedCategories && data.selectedCategories.length > 0) {
+        isPhase2Active = true;
+        const buzzerBtn = document.getElementById('buzzerBtn');
+        if (buzzerBtn) buzzerBtn.style.display = 'none';
+
+        const statusEl = document.getElementById('playerStatus');
+        if (statusEl) statusEl.textContent = 'Fase 2 in corso!';
+
+        const p2Panel = document.getElementById('playerPhase2Panel');
+        if (p2Panel) p2Panel.style.display = 'block';
+
+        updatePlayerPerksDisplay();
+      }
+
       if (data.currentSong) {
         currentActiveSong = data.currentSong;
         document.getElementById('songCounter').textContent = `Canzone ${data.progressCount} di ${data.totalSongs}`;
