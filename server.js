@@ -16,6 +16,12 @@ app.use(express.static(path.join(__dirname, "public")));
 const BONUS_LIST = ["INIZIALI", "MINUTAGGIO", "FURTO", "SKIP"];
 const MALUS_LIST = ["CANTALE", "CATEGORIA", "ZITTO", "4/5"];
 
+// Nomi Squadre Personalizzabili
+let teamNames = {
+  A: "Squadra Rossa",
+  B: "Squadra Blu",
+};
+
 // Stato del Gioco in Memoria
 let buzzerQueue = [];
 let scores = { A: 0, B: 0 };
@@ -28,7 +34,7 @@ let turnPattern = [];
 let leadingTeam = "A";
 
 // Mappa per salvare le modifiche del Minutaggio dinamico sulle categorie
-let customStartTimes = {}; // es: { categoryId: newStartTimeInSeconds }
+let customStartTimes = {};
 
 let perksState = {
   A: {
@@ -48,6 +54,7 @@ io.on("connection", (socket) => {
   socket.emit("initGameState", {
     buzzerQueue,
     scores,
+    teamNames,
     progressCount: playedSongIds.length,
     totalSongs: songsList.length,
     currentSong,
@@ -56,10 +63,21 @@ io.on("connection", (socket) => {
     customStartTimes,
   });
 
+  // PERSONALIZZAZIONE NOMI SQUADRE
+  socket.on("updateTeamNames", (names) => {
+    if (names.A && names.A.trim()) teamNames.A = names.A.trim();
+    if (names.B && names.B.trim()) teamNames.B = names.B.trim();
+    io.emit("teamNamesUpdated", teamNames);
+    console.log(`🏷️ Nomi Squadre aggiornati: ${teamNames.A} vs ${teamNames.B}`);
+  });
+
   // 1. REGISTRAZIONE GIOCATORE
   socket.on("registerPlayer", (data) => {
     socket.data.playerName = data.name || "Giocatore";
-    socket.data.team = data.team;
+    socket.data.teamKey = data.teamKey; // 'A' o 'B'
+    socket.data.team =
+      teamNames[data.teamKey] ||
+      (data.teamKey === "A" ? teamNames.A : teamNames.B);
     console.log(
       `👤 Registrato: ${socket.data.playerName} (${socket.data.team})`,
     );
@@ -67,7 +85,8 @@ io.on("connection", (socket) => {
 
   // 2. PRESSIONE BUZZER (Fase 1)
   socket.on("pressBuzzer", () => {
-    const team = socket.data.team || "Senza Squadra";
+    const teamKey = socket.data.teamKey || "A";
+    const team = teamNames[teamKey] || "Senza Squadra";
     const name = socket.data.playerName || "Giocatore";
 
     const alreadyBuzzed = buzzerQueue.some(
@@ -90,6 +109,7 @@ io.on("connection", (socket) => {
         socketId: socket.id,
         name: name,
         team: team,
+        teamKey: teamKey,
         time: timeStr,
       };
 
@@ -155,7 +175,7 @@ io.on("connection", (socket) => {
       scores[team] = Math.max(0, scores[team] + amount);
       io.emit("scoreUpdated", scores);
       console.log(
-        `🏆 Punteggi aggiornati: Rossa ${scores.A} | Blu ${scores.B}`,
+        `🏆 Punteggi aggiornati: ${teamNames.A} ${scores.A} | ${teamNames.B} ${scores.B}`,
       );
     }
   });
@@ -187,7 +207,7 @@ io.on("connection", (socket) => {
       perksState,
     });
     console.log(
-      `🚀 Iniziata Fase 2. Squadra in vantaggio: ${leadingTeam === "A" ? "Rossa" : "Blu"}`,
+      `🚀 Iniziata Fase 2. Squadra in vantaggio: ${teamNames[leadingTeam]}`,
     );
   });
 
@@ -229,7 +249,7 @@ io.on("connection", (socket) => {
         ? "UTILIZZATO"
         : "RIATTIVATO";
       console.log(
-        `🔄 Squadra ${team} - ${type.toUpperCase()} '${perkName}': ${statusStr}`,
+        `🔄 Squadra ${teamNames[team]} - ${type.toUpperCase()} '${perkName}': ${statusStr}`,
       );
     }
   });
@@ -265,6 +285,7 @@ io.on("connection", (socket) => {
     turnPattern = [];
     buzzerQueue = [];
     customStartTimes = {};
+    teamNames = { A: "Squadra Rossa", B: "Squadra Blu" };
 
     perksState = {
       A: {
@@ -280,6 +301,7 @@ io.on("connection", (socket) => {
     io.emit("gameResetCompleted", {
       scores,
       perksState,
+      teamNames,
     });
 
     console.log("🧹 PARTITA COMPLETAMENTE AZZERATA DALL'HOST!");

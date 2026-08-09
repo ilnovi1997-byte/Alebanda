@@ -28,7 +28,7 @@
     .screen.active { display: flex; flex-direction: column; align-items: center; justify-content: center; }
 
     .brand-title { font-size: 3.5rem; font-weight: 900; color: var(--accent); text-transform: uppercase; letter-spacing: 2px; text-shadow: 0 0 20px rgba(245, 158, 11, 0.4); margin-bottom: 0.5rem; text-align: center; }
-    .brand-subtitle { font-size: 1.2rem; color: var(--text-muted); margin-bottom: 2.5rem; text-align: center; }
+    .brand-subtitle { font-size: 1.2rem; color: var(--text-muted); margin-bottom: 2rem; text-align: center; }
     
     .role-selection { display: flex; gap: 1.5rem; flex-wrap: wrap; justify-content: center; }
     .role-card { background: var(--card-bg); border: 2px solid #334155; padding: 2rem; border-radius: 16px; width: 260px; text-align: center; cursor: pointer; transition: all 0.2s ease; }
@@ -121,6 +121,7 @@
   <div id="homeScreen" class="screen active">
     <h1 class="brand-title">ALEBANDA</h1>
     <p class="brand-subtitle">La sfida musicale a squadre</p>
+    
     <div class="role-selection">
       <div class="role-card" onclick="startHostView()">
         <h3>📺 Schermo / Host</h3>
@@ -131,6 +132,16 @@
         <p>Partecipa alla partita dallo smartphone.</p>
       </div>
     </div>
+
+    <!-- BOX PERSONALIZZAZIONE NOMI SQUADRE DALL'HOMEPAGE -->
+    <div style="background: var(--card-bg); padding: 1.2rem; border-radius: 14px; border: 1px solid #334155; margin-top: 2rem; width: 100%; max-width: 540px; text-align: center;">
+      <h3 style="color: var(--accent); margin-bottom: 0.8rem; font-size: 1.1rem;">✏️ Personalizza Nomi Squadre</h3>
+      <div style="display: flex; gap: 10px; justify-content: center; margin-bottom: 0.8rem;">
+        <input type="text" id="inputTeamNameA" placeholder="Squadra Rossa" style="flex: 1; padding: 0.6rem; border-radius: 8px; border: 1px solid var(--team-a); background: #0f172a; color: white; text-align: center; font-weight: bold;">
+        <input type="text" id="inputTeamNameB" placeholder="Squadra Blu" style="flex: 1; padding: 0.6rem; border-radius: 8px; border: 1px solid var(--team-b); background: #0f172a; color: white; text-align: center; font-weight: bold;">
+      </div>
+      <button class="btn-score" style="background: var(--accent); color: black; width: 100%; padding: 0.6rem;" onclick="saveCustomTeamNames()">Salva Nomi Squadre</button>
+    </div>
   </div>
 
   <!-- 2. SCHERMO HOST - FASE 1: TOP 30 -->
@@ -140,7 +151,7 @@
         <h2 style="margin-bottom: 1rem; color: var(--accent);">Fase 1: TOP 30</h2>
         <div class="scoreboard">
           <div class="team-score team-a">
-            <div>SQUADRA ROSSA</div>
+            <div class="team-name-display-A">SQUADRA ROSSA</div>
             <div class="score-num" id="scoreA">0</div>
             <div>
               <button class="btn-score" onclick="updateScore('A', -1)">-1</button>
@@ -148,7 +159,7 @@
             </div>
           </div>
           <div class="team-score team-b">
-            <div>SQUADRA BLU</div>
+            <div class="team-name-display-B">SQUADRA BLU</div>
             <div class="score-num" id="scoreB">0</div>
             <div>
               <button class="btn-score" onclick="updateScore('B', -1)">-1</button>
@@ -206,7 +217,7 @@
 
         <div class="scoreboard">
           <div class="team-score team-a">
-            <div>SQUADRA ROSSA</div>
+            <div class="team-name-display-A">SQUADRA ROSSA</div>
             <div class="score-num" id="scoreA_p2">0</div>
             <div>
               <button class="btn-score" onclick="updateScore('A', -1)">-1</button>
@@ -214,7 +225,7 @@
             </div>
           </div>
           <div class="team-score team-b">
-            <div>SQUADRA BLU</div>
+            <div class="team-name-display-B">SQUADRA BLU</div>
             <div class="score-num" id="scoreB_p2">0</div>
             <div>
               <button class="btn-score" onclick="updateScore('B', -1)">-1</button>
@@ -232,7 +243,7 @@
         
         <!-- Rossa Perks -->
         <div class="perk-box" style="border-color: var(--team-a); margin-bottom: 0.8rem;">
-          <div class="perk-title" style="color: var(--team-a);">SQUADRA ROSSA</div>
+          <div class="perk-title team-name-display-A" style="color: var(--team-a);">SQUADRA ROSSA</div>
           <div class="perk-buttons">
             <span style="font-size: 0.75rem; width: 100%; font-weight: bold; color: var(--success);">BONUS:</span>
             <button class="btn-perk bonus" id="perk_A_bonus_0" onclick="usePerk('A','bonus',0)">INIZIALI</button>
@@ -250,7 +261,7 @@
 
         <!-- Blu Perks -->
         <div class="perk-box" style="border-color: var(--team-b);">
-          <div class="perk-title" style="color: var(--team-b);">SQUADRA BLU</div>
+          <div class="perk-title team-name-display-B" style="color: var(--team-b);">SQUADRA BLU</div>
           <div class="perk-buttons">
             <span style="font-size: 0.75rem; width: 100%; font-weight: bold; color: var(--success);">BONUS:</span>
             <button class="btn-perk bonus" id="perk_B_bonus_0" onclick="usePerk('B','bonus',0)">INIZIALI</button>
@@ -266,13 +277,12 @@
           </div>
         </div>
 
-        <!-- Pannello Modifica Minutaggio (Compare quando il Bonus Minutaggio è attivo per una squadra) -->
+        <!-- Pannello Modifica Minutaggio -->
         <div id="minutaggioControlBox" class="minutaggio-box" style="display: none;">
           <h4 style="color: var(--accent); margin-bottom: 0.5rem;">⏱️ BONUS MINUTAGGIO ATTIVO</h4>
           <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.8rem;">Seleziona la categoria e imposta il secondo da cui far partire le canzoni:</p>
           
           <select id="minutaggioCategorySelect" style="width: 100%; padding: 0.6rem; border-radius: 6px; background: #1e293b; color: white; border: 1px solid #334155; font-size: 0.9rem; margin-bottom: 0.8rem;">
-            <!-- Opzioni caricate dinamicamente -->
           </select>
 
           <div style="display: flex; gap: 8px; justify-content: center; align-items: center;">
@@ -301,7 +311,7 @@
 
         <div class="scoreboard">
           <div class="team-score team-a">
-            <div>SQUADRA ROSSA</div>
+            <div class="team-name-display-A">SQUADRA ROSSA</div>
             <div class="score-num" id="scoreA_p3">0</div>
             <div>
               <button class="btn-score" onclick="updateScore('A', -1)">-1</button>
@@ -309,7 +319,7 @@
             </div>
           </div>
           <div class="team-score team-b">
-            <div>SQUADRA BLU</div>
+            <div class="team-name-display-B">SQUADRA BLU</div>
             <div class="score-num" id="scoreB_p3">0</div>
             <div>
               <button class="btn-score" onclick="updateScore('B', -1)">-1</button>
@@ -341,8 +351,8 @@
     <div class="mobile-container">
       <h2 style="margin-bottom: 1.5rem;">Entra in Gioco</h2>
       <input type="text" id="playerNameInput" placeholder="Inserisci il tuo nome" style="width: 100%; padding: 0.9rem; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: white; font-size: 1rem; margin-bottom: 1.5rem; text-align: center;">
-      <button class="team-select-btn" style="background: var(--team-a);" onclick="joinTeam('A')">Entra nei ROSSI</button>
-      <button class="team-select-btn" style="background: var(--team-b);" onclick="joinTeam('B')">Entra nei BLU</button>
+      <button class="team-select-btn team-name-display-A" style="background: var(--team-a);" onclick="joinTeam('A')">Entra nella SQUADRA ROSSA</button>
+      <button class="team-select-btn team-name-display-B" style="background: var(--team-b);" onclick="joinTeam('B')">Entra nella SQUADRA BLU</button>
     </div>
   </div>
 
@@ -403,10 +413,13 @@
   <script>
     const socket = io();
 
+    let myTeamKey = 'A'; // 'A' o 'B'
     let myTeam = '';
     let myName = '';
     let hasBuzzed = false;
     let isPhase2Active = false;
+
+    let teamNames = { A: "Squadra Rossa", B: "Squadra Blu" };
 
     let ytPlayer = null;
     let isYtReady = false;
@@ -416,7 +429,7 @@
     let categoriesData = [];
     let currentCategory = null;
     let latestPerksState = null;
-    let customStartTimes = {}; // Mappa dei minutaggi personalizzati per categoria
+    let customStartTimes = {};
 
     const BONUS_NAMES = ["INIZIALI", "MINUTAGGIO", "FURTO", "SKIP"];
     const MALUS_NAMES = ["CANTALE", "CATEGORIA", "ZITTO", "4/5"];
@@ -428,18 +441,53 @@
 
     window.addEventListener('DOMContentLoaded', () => {
       const savedName = localStorage.getItem('alebanda_playerName');
-      const savedTeam = localStorage.getItem('alebanda_playerTeam');
+      const savedTeamKey = localStorage.getItem('alebanda_playerTeamKey');
 
-      if (savedName && savedTeam) {
+      if (savedName && savedTeamKey) {
         myName = savedName;
-        myTeam = savedTeam;
-        socket.emit('registerPlayer', { name: myName, team: myTeam });
+        myTeamKey = savedTeamKey;
+        
+        socket.emit('registerPlayer', { name: myName, teamKey: myTeamKey });
 
-        document.getElementById('playerInfoDisplay').textContent = `${myName} (${myTeam})`;
-        document.getElementById('playerInfoDisplay').style.color = myTeam.includes('Rossa') ? 'var(--team-a)' : 'var(--team-b)';
+        updatePlayerProfileDisplay();
         showScreen('playerBuzzerScreen');
       }
     });
+
+    function saveCustomTeamNames() {
+      const nameA = document.getElementById('inputTeamNameA').value.trim();
+      const nameB = document.getElementById('inputTeamNameB').value.trim();
+
+      if (!nameA && !nameB) return alert("Inserisci almeno un nome per la squadra!");
+
+      socket.emit('updateTeamNames', { A: nameA, B: nameB });
+      alert("Nomi delle squadre aggiornati con successo!");
+    }
+
+    function updateTeamNamesUI(names) {
+      teamNames = names;
+
+      document.querySelectorAll('.team-name-display-A').forEach(el => {
+        if (el.tagName === 'BUTTON') el.textContent = `Entra nei ${names.A}`;
+        else el.textContent = names.A;
+      });
+
+      document.querySelectorAll('.team-name-display-B').forEach(el => {
+        if (el.tagName === 'BUTTON') el.textContent = `Entra nei ${names.B}`;
+        else el.textContent = names.B;
+      });
+
+      updatePlayerProfileDisplay();
+    }
+
+    function updatePlayerProfileDisplay() {
+      myTeam = teamNames[myTeamKey] || (myTeamKey === 'A' ? "Squadra Rossa" : "Squadra Blu");
+      const displayEl = document.getElementById('playerInfoDisplay');
+      if (displayEl && myName) {
+        displayEl.textContent = `${myName} (${myTeam})`;
+        displayEl.style.color = myTeamKey === 'A' ? 'var(--team-a)' : 'var(--team-b)';
+      }
+    }
 
     function playBeepSound(frequency = 880, duration = 0.15, type = 'sine') {
       try {
@@ -559,7 +607,6 @@
       } else {
         stopTimerManual();
 
-        // Determina lo startTime: se per la categoria attiva è stato impostato un Minutaggio personalizzato usiamo quello
         let startTime = currentActiveSong.startTime || 0;
         if (currentCategory && customStartTimes[currentCategory.id] !== undefined) {
           startTime = customStartTimes[currentCategory.id];
@@ -625,12 +672,12 @@
       socket.emit('startPhase2');
     }
 
-    function renderCategories(disabledIds = [], turnTeam = 'A') {
+    function renderCategories(disabledIds = [], turnTeamKey = 'A') {
       const grid = document.getElementById('categoriesGrid');
       if (!grid) return;
 
-      const teamName = turnTeam === 'A' ? 'Squadra Rossa' : 'Squadra Blu';
-      const teamColor = turnTeam === 'A' ? 'var(--team-a)' : 'var(--team-b)';
+      const teamName = teamNames[turnTeamKey] || (turnTeamKey === 'A' ? "Squadra Rossa" : "Squadra Blu");
+      const teamColor = turnTeamKey === 'A' ? 'var(--team-a)' : 'var(--team-b)';
       
       const banner = document.getElementById('turnBanner');
       if (banner) {
@@ -682,7 +729,6 @@
         });
       });
 
-      // Se il Bonus MINUTAGGIO (index 1) è attivo per almeno una squadra, mostra il pannello di controllo minutaggio per l'Host
       const isMinutaggioActiveA = perksState.A.bonus[1];
       const isMinutaggioActiveB = perksState.B.bonus[1];
       const box = document.getElementById('minutaggioControlBox');
@@ -726,20 +772,19 @@
     }
 
     function updatePlayerPerksDisplay() {
-      if (!latestPerksState || !myTeam) return;
+      if (!latestPerksState || !myTeamKey) return;
 
-      const myTeamKey = myTeam.includes('Rossa') ? 'A' : 'B';
       const oppTeamKey = myTeamKey === 'A' ? 'B' : 'A';
 
       const labelMy = document.getElementById('labelMyTeamPerks');
       const labelOpp = document.getElementById('labelOppTeamPerks');
 
       if (labelMy) {
-        labelMy.textContent = `LA TUA SQUADRA (${myTeamKey === 'A' ? 'ROSSA' : 'BLU'})`;
+        labelMy.textContent = `LA TUA SQUADRA (${teamNames[myTeamKey]})`;
         labelMy.style.color = myTeamKey === 'A' ? 'var(--team-a)' : 'var(--team-b)';
       }
       if (labelOpp) {
-        labelOpp.textContent = `SQUADRA AVVERSARIA (${oppTeamKey === 'A' ? 'ROSSA' : 'BLU'})`;
+        labelOpp.textContent = `SQUADRA AVVERSARIA (${teamNames[oppTeamKey]})`;
         labelOpp.style.color = oppTeamKey === 'A' ? 'var(--team-a)' : 'var(--team-b)';
       }
 
@@ -765,23 +810,23 @@
       if (!nameInput) return alert("Inserisci il tuo nome!");
 
       myName = nameInput;
-      myTeam = teamCode === 'A' ? 'Squadra Rossa' : 'Squadra Blu';
+      myTeamKey = teamCode;
+      myTeam = teamNames[teamCode];
 
       localStorage.setItem('alebanda_playerName', myName);
-      localStorage.setItem('alebanda_playerTeam', myTeam);
+      localStorage.setItem('alebanda_playerTeamKey', myTeamKey);
 
-      socket.emit('registerPlayer', { name: myName, team: myTeam });
+      socket.emit('registerPlayer', { name: myName, teamKey: myTeamKey });
 
-      document.getElementById('playerInfoDisplay').textContent = `${myName} (${myTeam})`;
-      document.getElementById('playerInfoDisplay').style.color = teamCode === 'A' ? 'var(--team-a)' : 'var(--team-b)';
+      updatePlayerProfileDisplay();
       showScreen('playerBuzzerScreen');
     }
 
     function leavePlayerSession() {
       localStorage.removeItem('alebanda_playerName');
-      localStorage.removeItem('alebanda_playerTeam');
+      localStorage.removeItem('alebanda_playerTeamKey');
       myName = '';
-      myTeam = '';
+      myTeamKey = 'A';
       showScreen('homeScreen');
     }
 
@@ -827,6 +872,7 @@
 
     // --- SOCKET EVENTS ---
     socket.on('initGameState', (data) => {
+      if (data.teamNames) updateTeamNamesUI(data.teamNames);
       updateScoreboard(data.scores);
       renderQueue(data.buzzerQueue);
       latestPerksState = data.perksState;
@@ -852,6 +898,10 @@
         document.getElementById('btnPlayAudio').disabled = false;
         if (isYtReady) ytPlayer.cueVideoById(currentActiveSong.youtubeId);
       }
+    });
+
+    socket.on('teamNamesUpdated', (names) => {
+      updateTeamNamesUI(names);
     });
 
     socket.on('newSongExtracted', (data) => {
@@ -940,7 +990,6 @@
 
     socket.on('categoryStartTimeUpdated', (data) => {
       customStartTimes[data.categoryId] = data.newStartTime;
-      // Aggiorna le tessere della griglia se l'Host è sulla schermata categorie
       renderCategories(selectedCategories);
     });
 
@@ -981,10 +1030,11 @@
       pauseYouTubeAudio();
 
       localStorage.removeItem('alebanda_playerName');
-      localStorage.removeItem('alebanda_playerTeam');
+      localStorage.removeItem('alebanda_playerTeamKey');
       myName = '';
-      myTeam = '';
+      myTeamKey = 'A';
 
+      if (data.teamNames) updateTeamNamesUI(data.teamNames);
       updateScoreboard(data.scores);
       
       const buzzerBtn = document.getElementById('buzzerBtn');
