@@ -53,7 +53,6 @@
 
     .audio-panel { background: #0f172a; padding: 1.2rem; border-radius: 12px; text-align: center; margin-bottom: 1.2rem; border: 1px solid #334155; }
 
-    /* Coda Buzzer per Host */
     .buzzer-queue { margin-top: 1rem; }
     .queue-item { display: flex; justify-content: space-between; align-items: center; padding: 0.8rem 1rem; background: #0f172a; border-radius: 8px; margin-bottom: 0.5rem; border-left: 5px solid var(--accent); }
     .queue-item.first { border-left-color: var(--success); background: #064e3b; }
@@ -77,12 +76,17 @@
     .btn-perk.malus { background: #ef4444; }
     .btn-perk.used { opacity: 0.3; text-decoration: line-through; filter: grayscale(0.8); }
 
+    /* Minutaggio Controls Box */
+    .minutaggio-box {
+      background: #0f172a; border: 2px solid var(--accent); padding: 1rem;
+      border-radius: 12px; margin-top: 1rem; text-align: center;
+    }
+
     .song-row { background: #0f172a; padding: 0.8rem 1rem; border-radius: 10px; margin-bottom: 0.8rem; border: 1px solid #334155; display: flex; justify-content: space-between; align-items: center; }
     
     .mobile-container { width: 100%; max-width: 400px; text-align: center; }
     .team-select-btn { width: 100%; padding: 1.2rem; border-radius: 12px; border: none; font-size: 1.2rem; font-weight: bold; color: white; margin-bottom: 1rem; cursor: pointer; }
 
-    /* Pulsante Buzzer Smartphone */
     .buzzer-btn {
       width: 220px; height: 220px; border-radius: 50%; border: 8px solid #991b1b;
       background: radial-gradient(circle, #ef4444 0%, #dc2626 100%);
@@ -94,14 +98,12 @@
     .buzzer-btn:active { transform: translateY(8px); box-shadow: 0 4px 0 #7f1d1d; }
     .buzzer-btn.disabled { opacity: 0.4; pointer-events: none; filter: grayscale(1); }
 
-    /* Display Timer */
     .timer-box {
       background: #991b1b; padding: 0.8rem 1.5rem; border-radius: 12px;
       border: 2px solid #ef4444; margin: 1rem 0; text-align: center;
     }
     .timer-num { font-size: 3.5rem; font-weight: 900; color: white; line-height: 1; }
 
-    /* Badges Perks Smartphone */
     .perk-badge { display: inline-block; padding: 2px 6px; border-radius: 4px; font-size: 0.7rem; font-weight: bold; margin: 2px; }
     .perk-badge.bonus-active { background: #064e3b; color: #34d399; border: 1px solid #059669; }
     .perk-badge.bonus-used { background: #1e293b; color: #64748b; text-decoration: line-through; }
@@ -185,7 +187,6 @@
           I giocatori usano il pulsante BUZZ! per prenotarsi.<br>Il primo che clicca ferma l'audio!
         </p>
 
-        <!-- Pulsante Reset Completo -->
         <button class="btn-score" style="background: var(--error); color: white; width: 100%; margin-top: 2rem; padding: 0.8rem;" onclick="resetFullGame()">
           ⚠️ Azzera Partita e Ricomincia
         </button>
@@ -265,7 +266,21 @@
           </div>
         </div>
 
-        <!-- Pulsante Reset Completo -->
+        <!-- Pannello Modifica Minutaggio (Compare quando il Bonus Minutaggio è attivo per una squadra) -->
+        <div id="minutaggioControlBox" class="minutaggio-box" style="display: none;">
+          <h4 style="color: var(--accent); margin-bottom: 0.5rem;">⏱️ BONUS MINUTAGGIO ATTIVO</h4>
+          <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.8rem;">Seleziona la categoria e imposta il secondo da cui far partire le canzoni:</p>
+          
+          <select id="minutaggioCategorySelect" style="width: 100%; padding: 0.6rem; border-radius: 6px; background: #1e293b; color: white; border: 1px solid #334155; font-size: 0.9rem; margin-bottom: 0.8rem;">
+            <!-- Opzioni caricate dinamicamente -->
+          </select>
+
+          <div style="display: flex; gap: 8px; justify-content: center; align-items: center;">
+            <input type="number" id="minutaggioSecondsInput" placeholder="Secondi (es. 45)" min="0" max="300" style="width: 110px; padding: 0.6rem; border-radius: 6px; background: #1e293b; color: white; border: 1px solid #334155; font-size: 0.9rem; text-align: center;">
+            <button class="btn-score" style="background: var(--accent); color: black;" onclick="applyCustomMinutaggio()">Applica</button>
+          </div>
+        </div>
+
         <button class="btn-score" style="background: var(--error); color: white; width: 100%; margin-top: 1.5rem; padding: 0.8rem;" onclick="resetFullGame()">
           ⚠️ Azzera Partita e Ricomincia
         </button>
@@ -344,14 +359,12 @@
         <div id="playerTimerDisplay" class="timer-num" style="font-size: 3rem;">5</div>
       </div>
 
-      <!-- PANNELLO BONUS & MALUS DETTAGLIATO SMARTPHONE -->
       <div id="playerPhase2Panel" style="display: none; background: #1e293b; border-radius: 12px; padding: 1rem; margin-top: 1rem; border: 1px solid #334155; text-align: left;">
         <div style="text-align: center; margin-bottom: 0.8rem; padding-bottom: 0.6rem; border-bottom: 1px solid #334155;">
           <span style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase;">Categoria Attiva:</span>
           <h3 id="mobileActiveCategory" style="color: var(--accent); margin-top: 2px;">In attesa di selezione...</h3>
         </div>
 
-        <!-- Propria Squadra -->
         <div style="margin-bottom: 0.8rem;">
           <div id="labelMyTeamPerks" style="font-size: 0.85rem; font-weight: bold; margin-bottom: 0.3rem; color: var(--accent);">LA TUA SQUADRA</div>
           
@@ -365,7 +378,6 @@
           </div>
         </div>
 
-        <!-- Squadra Avversaria -->
         <div>
           <div id="labelOppTeamPerks" style="font-size: 0.85rem; font-weight: bold; margin-bottom: 0.3rem; color: var(--text-muted);">SQUADRA AVVERSARIA</div>
           
@@ -404,6 +416,7 @@
     let categoriesData = [];
     let currentCategory = null;
     let latestPerksState = null;
+    let customStartTimes = {}; // Mappa dei minutaggi personalizzati per categoria
 
     const BONUS_NAMES = ["INIZIALI", "MINUTAGGIO", "FURTO", "SKIP"];
     const MALUS_NAMES = ["CANTALE", "CATEGORIA", "ZITTO", "4/5"];
@@ -413,7 +426,6 @@
     let timeLeft = 5;
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
-    // Ripristina sessione salvata
     window.addEventListener('DOMContentLoaded', () => {
       const savedName = localStorage.getItem('alebanda_playerName');
       const savedTeam = localStorage.getItem('alebanda_playerTeam');
@@ -518,10 +530,12 @@
       
       fetch('/categories.json')
         .then(res => res.json())
-        .then(cats => { categoriesData = cats; });
+        .then(cats => { 
+          categoriesData = cats; 
+          populateMinutaggioCategorySelect();
+        });
     }
 
-    // --- RESET TOTALE DALL'HOST ---
     function resetFullGame() {
       if (confirm("Sei sicuro di voler azzerare tutti i punteggi, le categorie e ricominciare da capo?")) {
         socket.emit('resetFullGame');
@@ -544,7 +558,13 @@
         stopTimerManual();
       } else {
         stopTimerManual();
-        const startTime = currentActiveSong.startTime || 0;
+
+        // Determina lo startTime: se per la categoria attiva è stato impostato un Minutaggio personalizzato usiamo quello
+        let startTime = currentActiveSong.startTime || 0;
+        if (currentCategory && customStartTimes[currentCategory.id] !== undefined) {
+          startTime = customStartTimes[currentCategory.id];
+        }
+
         const durationMs = (currentActiveSong.duration || 10) * 1000;
 
         ytPlayer.seekTo(startTime, true);
@@ -621,10 +641,14 @@
 
       grid.innerHTML = categoriesData.map(cat => {
         const isDisabled = disabledIds.includes(cat.id);
+        const hasCustomTime = customStartTimes[cat.id] !== undefined;
+        const timeBadge = hasCustomTime ? `<small style="color: var(--accent); font-weight: bold;">⏱️ Start a ${customStartTimes[cat.id]}s</small>` : '';
+
         return `
           <div class="category-card ${isDisabled ? 'disabled' : ''}" onclick="pickCategory(${cat.id}, ${isDisabled})">
             <div class="category-icon">${cat.icon}</div>
             <div class="category-name">${cat.name}</div>
+            ${timeBadge}
           </div>
         `;
       }).join('');
@@ -657,6 +681,48 @@
           });
         });
       });
+
+      // Se il Bonus MINUTAGGIO (index 1) è attivo per almeno una squadra, mostra il pannello di controllo minutaggio per l'Host
+      const isMinutaggioActiveA = perksState.A.bonus[1];
+      const isMinutaggioActiveB = perksState.B.bonus[1];
+      const box = document.getElementById('minutaggioControlBox');
+
+      if (box) {
+        if (isMinutaggioActiveA || isMinutaggioActiveB) {
+          box.style.display = 'block';
+        } else {
+          box.style.display = 'none';
+        }
+      }
+    }
+
+    function populateMinutaggioCategorySelect() {
+      const select = document.getElementById('minutaggioCategorySelect');
+      if (!select) return;
+
+      select.innerHTML = categoriesData.map(cat => `
+        <option value="${cat.id}">${cat.icon} ${cat.name}</option>
+      `).join('');
+    }
+
+    function applyCustomMinutaggio() {
+      const select = document.getElementById('minutaggioCategorySelect');
+      const input = document.getElementById('minutaggioSecondsInput');
+
+      if (!select || !input) return;
+
+      const categoryId = parseInt(select.value, 10);
+      const newStartTime = parseInt(input.value, 10);
+
+      if (isNaN(newStartTime) || newStartTime < 0) {
+        alert("Inserisci un numero di secondi valido (es. 30, 45, 60)");
+        return;
+      }
+
+      socket.emit('updateCategoryStartTime', { categoryId, newStartTime });
+      const cat = categoriesData.find(c => c.id === categoryId);
+      alert(`⏱️ Minutaggio di avvio impostato a ${newStartTime}s per la categoria "${cat.name}"!`);
+      input.value = '';
     }
 
     function updatePlayerPerksDisplay() {
@@ -764,6 +830,7 @@
       updateScoreboard(data.scores);
       renderQueue(data.buzzerQueue);
       latestPerksState = data.perksState;
+      if (data.customStartTimes) customStartTimes = data.customStartTimes;
 
       if (data.selectedCategories && data.selectedCategories.length > 0) {
         isPhase2Active = true;
@@ -871,6 +938,12 @@
       updatePlayerPerksDisplay();
     });
 
+    socket.on('categoryStartTimeUpdated', (data) => {
+      customStartTimes[data.categoryId] = data.newStartTime;
+      // Aggiorna le tessere della griglia se l'Host è sulla schermata categorie
+      renderCategories(selectedCategories);
+    });
+
     socket.on('buzzerQueueUpdated', (queue) => {
       renderQueue(queue);
 
@@ -898,14 +971,12 @@
       stopAnswerTimerLocal();
     });
 
-    socket.on('scoreUpdated', (scores) => updateScoreboard(scores));
-
-    // EVENTO RESET COMPLETO
     socket.on('gameResetCompleted', (data) => {
       isPhase2Active = false;
       hasBuzzed = false;
       currentActiveSong = null;
       currentCategory = null;
+      customStartTimes = {};
       stopTimerManual();
       pauseYouTubeAudio();
 

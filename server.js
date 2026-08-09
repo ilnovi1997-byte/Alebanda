@@ -27,6 +27,9 @@ let turnIndex = 0;
 let turnPattern = [];
 let leadingTeam = "A";
 
+// Mappa per salvare le modifiche del Minutaggio dinamico sulle categorie
+let customStartTimes = {}; // es: { categoryId: newStartTimeInSeconds }
+
 let perksState = {
   A: {
     bonus: [false, false, false, false],
@@ -50,12 +53,13 @@ io.on("connection", (socket) => {
     currentSong,
     selectedCategories,
     perksState,
+    customStartTimes,
   });
 
-  // 1. REGISTRAZIONE GIOCATORE (da smartphone)
+  // 1. REGISTRAZIONE GIOCATORE
   socket.on("registerPlayer", (data) => {
     socket.data.playerName = data.name || "Giocatore";
-    socket.data.team = data.team; // 'Squadra Rossa' o 'Squadra Blu'
+    socket.data.team = data.team;
     console.log(
       `👤 Registrato: ${socket.data.playerName} (${socket.data.team})`,
     );
@@ -230,7 +234,19 @@ io.on("connection", (socket) => {
     }
   });
 
-  // 11. SINCRONIZZAZIONE TIMER 5 SECONDI
+  // 11. BONUS MINUTAGGIO: AGGIORNAMENTO SECONDI DI AVVIO CATEGORIA
+  socket.on("updateCategoryStartTime", ({ categoryId, newStartTime }) => {
+    customStartTimes[categoryId] = parseInt(newStartTime, 10) || 0;
+    io.emit("categoryStartTimeUpdated", {
+      categoryId,
+      newStartTime: customStartTimes[categoryId],
+    });
+    console.log(
+      `⏱️ Categoria #${categoryId} aggiornata con nuovo Minutaggio di avvio: ${customStartTimes[categoryId]}s`,
+    );
+  });
+
+  // 12. SINCRONIZZAZIONE TIMER 5 SECONDI
   socket.on("triggerTimerStart", () => {
     io.emit("startTimerOnClients");
   });
@@ -239,7 +255,7 @@ io.on("connection", (socket) => {
     io.emit("stopTimerOnClients");
   });
 
-  // 12. RESET COMPLETO DI TUTTA LA PARTITA
+  // 13. RESET COMPLETO DI TUTTA LA PARTITA
   socket.on("resetFullGame", () => {
     scores = { A: 0, B: 0 };
     playedSongIds = [];
@@ -248,6 +264,7 @@ io.on("connection", (socket) => {
     turnIndex = 0;
     turnPattern = [];
     buzzerQueue = [];
+    customStartTimes = {};
 
     perksState = {
       A: {
