@@ -12,7 +12,7 @@ const io = new Server(server, {
 
 app.use(express.static(path.join(__dirname, "public")));
 
-// Nomi dei Perks
+// Nomi dei Perks per il logging
 const BONUS_LIST = ["INIZIALI", "MINUTAGGIO", "FURTO", "SKIP"];
 const MALUS_LIST = ["CANTALE", "CATEGORIA", "ZITTO", "4/5"];
 
@@ -41,6 +41,7 @@ let perksState = {
 io.on("connection", (socket) => {
   console.log(`🔌 Dispositivo connesso: ${socket.id}`);
 
+  // Invia lo stato iniziale al client appena connesso
   socket.emit("initGameState", {
     buzzerQueue,
     scores,
@@ -51,14 +52,16 @@ io.on("connection", (socket) => {
     perksState,
   });
 
+  // 1. REGISTRAZIONE GIOCATORE (da smartphone)
   socket.on("registerPlayer", (data) => {
     socket.data.playerName = data.name || "Giocatore";
-    socket.data.team = data.team;
+    socket.data.team = data.team; // 'Squadra Rossa' o 'Squadra Blu'
     console.log(
       `👤 Registrato: ${socket.data.playerName} (${socket.data.team})`,
     );
   });
 
+  // 2. PRESSIONE BUZZER (Fase 1)
   socket.on("pressBuzzer", () => {
     const team = socket.data.team || "Senza Squadra";
     const name = socket.data.playerName || "Giocatore";
@@ -94,6 +97,7 @@ io.on("connection", (socket) => {
     }
   });
 
+  // 3. FASE 1: CARICAMENTO TOP 30
   socket.on("loadTop30Songs", (songs) => {
     songsList = songs;
     playedSongIds = [];
@@ -104,6 +108,7 @@ io.on("connection", (socket) => {
     console.log(`🎵 Caricate ${songsList.length} canzoni per la Top 30`);
   });
 
+  // 4. FASE 1: ESTRAZIONE CANZONE
   socket.on("playNextRandomSong", () => {
     const remainingSongs = songsList.filter(
       (song) => !playedSongIds.includes(song.id),
@@ -133,12 +138,14 @@ io.on("connection", (socket) => {
     );
   });
 
+  // 5. RESET CODA BUZZER
   socket.on("resetBuzzerQueue", () => {
     buzzerQueue = [];
     io.emit("buzzerQueueUpdated", buzzerQueue);
     console.log("🧹 Coda Buzzer azzerata dal Presentatore");
   });
 
+  // 6. AGGIORNAMENTO PUNTEGGI
   socket.on("updateScore", ({ team, amount }) => {
     if (scores[team] !== undefined) {
       scores[team] = Math.max(0, scores[team] + amount);
@@ -149,6 +156,7 @@ io.on("connection", (socket) => {
     }
   });
 
+  // 7. FASE 2: AVVIO SELEZIONE CATEGORIE
   socket.on("startPhase2", () => {
     leadingTeam = scores.B > scores.A ? "B" : "A";
     const otherTeam = leadingTeam === "A" ? "B" : "A";
@@ -179,6 +187,7 @@ io.on("connection", (socket) => {
     );
   });
 
+  // 8. FASE 2: SELEZIONE CATEGORIA
   socket.on("selectCategory", (categoryId) => {
     if (!selectedCategories.includes(categoryId)) {
       selectedCategories.push(categoryId);
@@ -192,6 +201,7 @@ io.on("connection", (socket) => {
     }
   });
 
+  // 9. FASE 2: FINE ROUND CATEGORIA
   socket.on("finishCategoryRound", () => {
     turnIndex++;
     const nextTeam = turnPattern[turnIndex] || null;
@@ -203,15 +213,25 @@ io.on("connection", (socket) => {
     });
   });
 
+  // 10. FASE 2: USO / RIATTIVAZIONE BONUS E MALUS (Toggle ON/OFF)
   socket.on("usePerk", ({ team, type, index }) => {
-    if (perksState[team] && perksState[team][type]) {
-      perksState[team][type][index] = true;
+    if (perksState[team] && perksState[team][type] !== undefined) {
+      // Inverte lo stato per permettere la riattivazione se già cliccato
+      perksState[team][type][index] = !perksState[team][type][index];
+
       io.emit("perkUpdated", perksState);
-      const name = type === "bonus" ? BONUS_LIST[index] : MALUS_LIST[index];
-      console.log(`💥 ${team} ha utilizzato il ${type.toUpperCase()}: ${name}`);
+
+      const perkName = type === "bonus" ? BONUS_LIST[index] : MALUS_LIST[index];
+      const statusStr = perksState[team][type][index]
+        ? "UTILIZZATO"
+        : "RIATTIVATO";
+      console.log(
+        `🔄 Squadra ${team} - ${type.toUpperCase()} '${perkName}': ${statusStr}`,
+      );
     }
   });
 
+  // 11. SINCRONIZZAZIONE TIMER 5 SECONDI
   socket.on("triggerTimerStart", () => {
     io.emit("startTimerOnClients");
   });

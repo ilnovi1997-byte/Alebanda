@@ -75,7 +75,8 @@
     .btn-perk { border: none; padding: 0.4rem 0.6rem; border-radius: 6px; font-weight: bold; font-size: 0.75rem; cursor: pointer; color: white; transition: all 0.2s; }
     .btn-perk.bonus { background: #10b981; }
     .btn-perk.malus { background: #ef4444; }
-    .btn-perk.used { opacity: 0.25; text-decoration: line-through; cursor: not-allowed; filter: grayscale(1); }
+    /* Disattivato visivamente ma sempre cliccabile dall'Host per riattivarlo */
+    .btn-perk.used { opacity: 0.3; text-decoration: line-through; filter: grayscale(0.8); }
 
     .song-row { background: #0f172a; padding: 0.8rem 1rem; border-radius: 10px; margin-bottom: 0.8rem; border: 1px solid #334155; display: flex; justify-content: space-between; align-items: center; }
     
@@ -222,7 +223,7 @@
 
       <div class="game-box">
         <h3>Bonus & Malus Disponibili</h3>
-        <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 0.8rem;">Utilizzabili una sola volta per squadra:</p>
+        <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 0.8rem;">Clicca per attivare/disattivare (ON/OFF):</p>
         
         <!-- Rossa Perks -->
         <div class="perk-box" style="border-color: var(--team-a); margin-bottom: 0.8rem;">
