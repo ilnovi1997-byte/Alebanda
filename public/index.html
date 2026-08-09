@@ -27,7 +27,6 @@
     .screen { display: none; padding: 1.5rem; flex: 1; width: 100%; }
     .screen.active { display: flex; flex-direction: column; align-items: center; justify-content: center; }
 
-    /* Brand Header */
     .brand-title { font-size: 3.5rem; font-weight: 900; color: var(--accent); text-transform: uppercase; letter-spacing: 2px; text-shadow: 0 0 20px rgba(245, 158, 11, 0.4); margin-bottom: 0.5rem; text-align: center; }
     .brand-subtitle { font-size: 1.2rem; color: var(--text-muted); margin-bottom: 2.5rem; text-align: center; }
     
@@ -35,7 +34,6 @@
     .role-card { background: var(--card-bg); border: 2px solid #334155; padding: 2rem; border-radius: 16px; width: 260px; text-align: center; cursor: pointer; transition: all 0.2s ease; }
     .role-card:hover { border-color: var(--accent); transform: translateY(-4px); }
 
-    /* Dashboard Layout */
     .main-dashboard { width: 100%; max-width: 1100px; display: grid; grid-template-columns: 1fr; gap: 1.5rem; }
     @media (min-width: 850px) {
       .main-dashboard { grid-template-columns: 2fr 1fr; }
@@ -43,7 +41,6 @@
     
     .game-box { background: var(--card-bg); padding: 1.5rem; border-radius: 16px; border: 1px solid #334155; }
     
-    /* Tabellone Punteggi */
     .scoreboard { display: flex; justify-content: space-between; gap: 1rem; margin-bottom: 1.5rem; }
     .team-score { flex: 1; padding: 1rem; border-radius: 12px; text-align: center; font-weight: bold; }
     .team-a { background: rgba(236, 72, 153, 0.15); border: 2px solid var(--team-a); color: var(--team-a); }
@@ -54,15 +51,13 @@
     .btn-score:hover:not(:disabled) { background: #475569; }
     .btn-score:disabled { opacity: 0.4; cursor: not-allowed; }
 
-    /* Panel Audio */
     .audio-panel { background: #0f172a; padding: 1.2rem; border-radius: 12px; text-align: center; margin-bottom: 1.2rem; border: 1px solid #334155; }
 
-    /* Coda Buzzer */
+    /* Coda Buzzer per Host */
     .buzzer-queue { margin-top: 1rem; }
     .queue-item { display: flex; justify-content: space-between; align-items: center; padding: 0.8rem 1rem; background: #0f172a; border-radius: 8px; margin-bottom: 0.5rem; border-left: 5px solid var(--accent); }
     .queue-item.first { border-left-color: var(--success); background: #064e3b; }
 
-    /* Categorie Grid */
     .category-card {
       background: var(--card-bg); border: 2px solid #334155; border-radius: 14px;
       padding: 1.2rem 0.8rem; text-align: center; cursor: pointer; transition: all 0.2s ease;
@@ -73,39 +68,45 @@
     .category-icon { font-size: 2.2rem; }
     .category-name { font-size: 1rem; font-weight: bold; color: #fff; }
 
-    /* Bonus & Malus Box */
-    .perks-container { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; margin-top: 1rem; }
+    /* Bonus & Malus Styles */
     .perk-box { background: #0f172a; padding: 0.8rem; border-radius: 10px; border: 1px solid #334155; text-align: center; }
     .perk-title { font-size: 0.85rem; font-weight: bold; margin-bottom: 0.5rem; text-transform: uppercase; }
-    .perk-buttons { display: flex; gap: 4px; justify-content: center; flex-wrap: wrap; }
-    .btn-perk { border: none; padding: 0.4rem 0.6rem; border-radius: 6px; font-weight: bold; font-size: 0.8rem; cursor: pointer; color: white; }
+    .perk-buttons { display: flex; gap: 6px; justify-content: center; flex-wrap: wrap; }
+    .btn-perk { border: none; padding: 0.4rem 0.6rem; border-radius: 6px; font-weight: bold; font-size: 0.75rem; cursor: pointer; color: white; transition: all 0.2s; }
     .btn-perk.bonus { background: #10b981; }
     .btn-perk.malus { background: #ef4444; }
     .btn-perk.used { opacity: 0.25; text-decoration: line-through; cursor: not-allowed; filter: grayscale(1); }
 
-    /* Lista 5 Canzoni della Categoria */
     .song-row { background: #0f172a; padding: 0.8rem 1rem; border-radius: 10px; margin-bottom: 0.8rem; border: 1px solid #334155; display: flex; justify-content: space-between; align-items: center; }
     
-    /* Mobile Player */
     .mobile-container { width: 100%; max-width: 400px; text-align: center; }
     .team-select-btn { width: 100%; padding: 1.2rem; border-radius: 12px; border: none; font-size: 1.2rem; font-weight: bold; color: white; margin-bottom: 1rem; cursor: pointer; }
-    
+
+    /* Pulsante Buzzer Smartphone */
     .buzzer-btn {
       width: 220px; height: 220px; border-radius: 50%; border: 8px solid #991b1b;
       background: radial-gradient(circle, #ef4444 0%, #dc2626 100%);
       color: white; font-size: 1.8rem; font-weight: 900;
       box-shadow: 0 12px 0 #7f1d1d, 0 15px 25px rgba(0,0,0,0.5);
-      cursor: pointer; margin: 2rem auto; display: flex; align-items: center; justify-content: center;
-      user-select: none; -webkit-tap-highlight-color: transparent;
+      cursor: pointer; margin: 1.5rem auto; display: flex; align-items: center; justify-content: center;
+      user-select: none; -webkit-tap-highlight-color: transparent; transition: all 0.1s ease;
     }
+    .buzzer-btn:active { transform: translateY(8px); box-shadow: 0 4px 0 #7f1d1d; }
     .buzzer-btn.disabled { opacity: 0.4; pointer-events: none; filter: grayscale(1); }
 
-    /* Timer Box */
+    /* Display Timer */
     .timer-box {
       background: #991b1b; padding: 0.8rem 1.5rem; border-radius: 12px;
-      border: 2px solid #ef4444; margin: 1rem 0; text-align: center; display: none;
+      border: 2px solid #ef4444; margin: 1rem 0; text-align: center;
     }
-    .timer-val { font-size: 3.5rem; font-weight: 900; color: white; line-height: 1; }
+    .timer-num { font-size: 3.5rem; font-weight: 900; color: white; line-height: 1; }
+
+    /* Badges Perks Smartphone */
+    .perk-badge { display: inline-block; padding: 2px 6px; border-radius: 4px; font-size: 0.7rem; font-weight: bold; margin: 2px; }
+    .perk-badge.bonus-active { background: #064e3b; color: #34d399; border: 1px solid #059669; }
+    .perk-badge.bonus-used { background: #1e293b; color: #64748b; text-decoration: line-through; }
+    .perk-badge.malus-active { background: #7f1d1d; color: #fca5a5; border: 1px solid #dc2626; }
+    .perk-badge.malus-used { background: #1e293b; color: #64748b; text-decoration: line-through; }
 
     #yt-player-container { display: none; }
   </style>
@@ -130,7 +131,7 @@
     </div>
   </div>
 
-  <!-- 2. SCHERMO HOST - FASE 1: TOP 30 (CON BUZZER) -->
+  <!-- 2. SCHERMO HOST - FASE 1: TOP 30 -->
   <div id="hostScreen" class="screen">
     <div class="main-dashboard">
       <div class="game-box">
@@ -157,6 +158,7 @@
         <div class="audio-panel">
           <p id="songCounter" style="color: var(--text-muted); font-weight: bold; margin-bottom: 0.5rem;">Top 30: In attesa...</p>
           <h2 id="songSolution" style="margin: 0.8rem 0; color: var(--accent);">❓ ??? - ???</h2>
+          
           <div style="display: flex; gap: 6px; justify-content: center; flex-wrap: wrap;">
             <button class="btn-score" style="background: var(--accent); color: black;" onclick="triggerNextSong()">🎲 Estrai Canzone</button>
             <button class="btn-score" id="btnPlayAudio" onclick="toggleAudio()" disabled>▶️ Riproduci Snippet</button>
@@ -169,7 +171,7 @@
             <h3>Ordini di Prenotazione Buzzer:</h3>
             <button class="btn-score" style="font-size: 0.8rem;" onclick="resetBuzzerQueue()">🔄 Resetta Coda</button>
           </div>
-          <div id="queueList"><p style="color: var(--text-muted); font-style: italic;">In attesa di prenotazioni...</p></div>
+          <div id="queueList"><p style="color: var(--text-muted); font-style: italic;">In attesa che qualcuno prema il buzzer...</p></div>
         </div>
 
         <button id="btnGoToPhase2" class="btn-score" style="background: var(--accent); color: black; display: none; margin-top: 1.5rem; width: 100%; font-size: 1.1rem; padding: 1rem;" onclick="goToPhase2()">
@@ -178,9 +180,9 @@
       </div>
 
       <div class="game-box">
-        <h3>Info di Gioco</h3>
+        <h3>Info Fase 1</h3>
         <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 0.5rem; line-height: 1.5;">
-          Usa lo smartphone per prenotarti con il BUZZER!<br>Il primo che clicca ferma l'audio e si aggiudica la risposta.
+          I giocatori usano il pulsante BUZZ! per prenotarsi.<br>Il primo che clicca ferma l'audio!
         </p>
       </div>
     </div>
@@ -192,7 +194,6 @@
       <div class="game-box">
         <h2 style="color: var(--accent); margin-bottom: 0.3rem;">FASE 2: CATEGORIE</h2>
         
-        <!-- Banner Turno -->
         <div id="turnBanner" style="background: #0f172a; padding: 0.8rem; border-radius: 10px; border: 2px solid var(--accent); text-align: center; margin-bottom: 1.2rem; font-weight: bold; font-size: 1.1rem;">
           Tocca alla <span id="currentTurnTeamName" style="text-transform: uppercase;">...</span> scegliere la categoria!
         </div>
@@ -219,25 +220,25 @@
         <div id="categoriesGrid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 0.8rem;"></div>
       </div>
 
-      <!-- Bonus & Malus Panel Host -->
       <div class="game-box">
         <h3>Bonus & Malus Disponibili</h3>
-        <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 0.8rem;">4 Bonus e 4 Malus per squadra:</p>
+        <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 0.8rem;">Utilizzabili una sola volta per squadra:</p>
         
         <!-- Rossa Perks -->
         <div class="perk-box" style="border-color: var(--team-a); margin-bottom: 0.8rem;">
           <div class="perk-title" style="color: var(--team-a);">SQUADRA ROSSA</div>
           <div class="perk-buttons">
-            <span style="font-size: 0.75rem; width: 100%;">BONUS:</span>
-            <button class="btn-perk bonus" id="perk_A_bonus_0" onclick="usePerk('A','bonus',0)">B1</button>
-            <button class="btn-perk bonus" id="perk_A_bonus_1" onclick="usePerk('A','bonus',1)">B2</button>
-            <button class="btn-perk bonus" id="perk_A_bonus_2" onclick="usePerk('A','bonus',2)">B3</button>
-            <button class="btn-perk bonus" id="perk_A_bonus_3" onclick="usePerk('A','bonus',3)">B4</button>
-            <span style="font-size: 0.75rem; width: 100%; margin-top: 4px;">MALUS:</span>
-            <button class="btn-perk malus" id="perk_A_malus_0" onclick="usePerk('A','malus',0)">M1</button>
-            <button class="btn-perk malus" id="perk_A_malus_1" onclick="usePerk('A','malus',1)">M2</button>
-            <button class="btn-perk malus" id="perk_A_malus_2" onclick="usePerk('A','malus',2)">M3</button>
-            <button class="btn-perk malus" id="perk_A_malus_3" onclick="usePerk('A','malus',3)">M4</button>
+            <span style="font-size: 0.75rem; width: 100%; font-weight: bold; color: var(--success);">BONUS:</span>
+            <button class="btn-perk bonus" id="perk_A_bonus_0" onclick="usePerk('A','bonus',0)">INIZIALI</button>
+            <button class="btn-perk bonus" id="perk_A_bonus_1" onclick="usePerk('A','bonus',1)">MINUTAGGIO</button>
+            <button class="btn-perk bonus" id="perk_A_bonus_2" onclick="usePerk('A','bonus',2)">FURTO</button>
+            <button class="btn-perk bonus" id="perk_A_bonus_3" onclick="usePerk('A','bonus',3)">SKIP</button>
+            
+            <span style="font-size: 0.75rem; width: 100%; margin-top: 6px; font-weight: bold; color: var(--error);">MALUS:</span>
+            <button class="btn-perk malus" id="perk_A_malus_0" onclick="usePerk('A','malus',0)">CANTALE</button>
+            <button class="btn-perk malus" id="perk_A_malus_1" onclick="usePerk('A','malus',1)">CATEGORIA</button>
+            <button class="btn-perk malus" id="perk_A_malus_2" onclick="usePerk('A','malus',2)">ZITTO</button>
+            <button class="btn-perk malus" id="perk_A_malus_3" onclick="usePerk('A','malus',3)">4/5</button>
           </div>
         </div>
 
@@ -245,23 +246,24 @@
         <div class="perk-box" style="border-color: var(--team-b);">
           <div class="perk-title" style="color: var(--team-b);">SQUADRA BLU</div>
           <div class="perk-buttons">
-            <span style="font-size: 0.75rem; width: 100%;">BONUS:</span>
-            <button class="btn-perk bonus" id="perk_B_bonus_0" onclick="usePerk('B','bonus',0)">B1</button>
-            <button class="btn-perk bonus" id="perk_B_bonus_1" onclick="usePerk('B','bonus',1)">B2</button>
-            <button class="btn-perk bonus" id="perk_B_bonus_2" onclick="usePerk('B','bonus',2)">B3</button>
-            <button class="btn-perk bonus" id="perk_B_bonus_3" onclick="usePerk('B','bonus',3)">B4</button>
-            <span style="font-size: 0.75rem; width: 100%; margin-top: 4px;">MALUS:</span>
-            <button class="btn-perk malus" id="perk_B_malus_0" onclick="usePerk('B','malus',0)">M1</button>
-            <button class="btn-perk malus" id="perk_B_malus_1" onclick="usePerk('B','malus',1)">M2</button>
-            <button class="btn-perk malus" id="perk_B_malus_2" onclick="usePerk('B','malus',2)">M3</button>
-            <button class="btn-perk malus" id="perk_B_malus_3" onclick="usePerk('B','malus',3)">M4</button>
+            <span style="font-size: 0.75rem; width: 100%; font-weight: bold; color: var(--success);">BONUS:</span>
+            <button class="btn-perk bonus" id="perk_B_bonus_0" onclick="usePerk('B','bonus',0)">INIZIALI</button>
+            <button class="btn-perk bonus" id="perk_B_bonus_1" onclick="usePerk('B','bonus',1)">MINUTAGGIO</button>
+            <button class="btn-perk bonus" id="perk_B_bonus_2" onclick="usePerk('B','bonus',2)">FURTO</button>
+            <button class="btn-perk bonus" id="perk_B_bonus_3" onclick="usePerk('B','bonus',3)">SKIP</button>
+            
+            <span style="font-size: 0.75rem; width: 100%; margin-top: 6px; font-weight: bold; color: var(--error);">MALUS:</span>
+            <button class="btn-perk malus" id="perk_B_malus_0" onclick="usePerk('B','malus',0)">CANTALE</button>
+            <button class="btn-perk malus" id="perk_B_malus_1" onclick="usePerk('B','malus',1)">CATEGORIA</button>
+            <button class="btn-perk malus" id="perk_B_malus_2" onclick="usePerk('B','malus',2)">ZITTO</button>
+            <button class="btn-perk malus" id="perk_B_malus_3" onclick="usePerk('B','malus',3)">4/5</button>
           </div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- 4. FASE 2: CATEGORIA ATTIVA (5 CANZONI + TIMER DEDICATO) -->
+  <!-- 4. SCHERMATA CATEGORIA ATTIVA (5 CANZONI PER HOST) -->
   <div id="activeCategoryScreen" class="screen">
     <div class="main-dashboard">
       <div class="game-box">
@@ -291,22 +293,19 @@
           </div>
         </div>
 
-        <!-- Timer Visivo per l'Host (Fine Brano) -->
-        <div class="timer-box" id="hostTimerBox">
-          <div style="font-size: 0.85rem; text-transform: uppercase; color: #fca5a5; font-weight: bold;">Tempo per rispondere a voce</div>
-          <div class="timer-val" id="hostTimerVal">5</div>
+        <div id="timerContainerHostCat" class="timer-box" style="display: none;">
+          <div style="font-size: 0.85rem; text-transform: uppercase; color: #fca5a5; font-weight: bold;">Tempo per rispondere</div>
+          <div class="timer-num" id="timerDisplayHostCat">5</div>
+          <button class="btn-score" style="background: #0f172a; margin-top: 0.5rem;" onclick="stopTimerManual()">⏹️ Ferma Timer</button>
         </div>
 
-        <!-- Lista 5 Canzoni -->
         <div id="categorySongsList"></div>
       </div>
 
       <div class="game-box">
-        <h3>Regola della Fase 2</h3>
-        <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 0.5rem; line-height: 1.5;">
-          In questa fase <strong>non c'è il buzzer</strong>.<br><br>
-          Non appena lo snippet della canzone termina, parte il <strong>timer di 5 secondi</strong> con i BEEP.<br><br>
-          L'Host decreterà a voce se la squadra ha risposto correttamente entro lo scadere del tempo!
+        <h3>Istruzioni Fase 2</h3>
+        <p style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.5;">
+          Clicca su <strong>▶️ Riproduci</strong>. Allo scadere dell'anteprima parte il timer di 5 secondi per la risposta.
         </p>
       </div>
     </div>
@@ -322,43 +321,54 @@
     </div>
   </div>
 
-  <!-- 6. SCHERMATA GIOCATORE (MOBILE) -->
+  <!-- 6. DISPLAY GIOCATORE -->
   <div id="playerBuzzerScreen" class="screen">
     <div class="mobile-container">
-      <h2 id="playerInfoDisplay" style="margin-bottom: 0.3rem;"></h2>
+      <h2 id="playerInfoDisplay" style="margin-bottom: 0.5rem;"></h2>
       <p id="playerStatus" style="color: var(--text-muted); font-size: 0.9rem;">Pronto per il gioco!</p>
-      
-      <!-- Pulsante BUZZER (Visibile SOLO in Fase 1) -->
+
       <div class="buzzer-btn" id="buzzerBtn" onclick="pressBuzzer()">BUZZ!</div>
 
-      <!-- Timer Mobile (Visibile in Fase 2 allo scadere del brano) -->
-      <div class="timer-box" id="playerTimerBox" style="margin-top: 1.5rem;">
-        <span style="font-size: 0.8rem; color: #fca5a5; font-weight: bold;">TEMPO RIMASTO: </span>
-        <span class="timer-val" id="playerTimerVal" style="font-size: 2rem;">5</span>
+      <div id="playerTimerContainer" class="timer-box" style="display: none; margin-top: 1rem;">
+        <span style="font-size: 0.85rem; color: #fca5a5; font-weight: bold; text-transform: uppercase;">TEMPO PER RISPONDERE:</span>
+        <div id="playerTimerDisplay" class="timer-num" style="font-size: 3rem;">5</div>
       </div>
 
-      <!-- Pannello Info Fase 2 (Bonus & Malus) -->
+      <!-- PANNELLO BONUS & MALUS DETTAGLIATO SMARTPHONE -->
       <div id="playerPhase2Panel" style="display: none; background: #1e293b; border-radius: 12px; padding: 1rem; margin-top: 1.5rem; border: 1px solid #334155; text-align: left;">
         <div style="text-align: center; margin-bottom: 1rem; padding-bottom: 0.8rem; border-bottom: 1px solid #334155;">
           <span style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase;">Categoria Attiva:</span>
           <h3 id="mobileActiveCategory" style="color: var(--accent); margin-top: 2px;">In attesa di selezione...</h3>
         </div>
 
-        <div style="margin-bottom: 0.8rem;">
+        <!-- Propria Squadra -->
+        <div style="margin-bottom: 1rem;">
           <div id="labelMyTeamPerks" style="font-size: 0.85rem; font-weight: bold; margin-bottom: 0.4rem; color: var(--accent);">LA TUA SQUADRA</div>
-          <div style="display: flex; gap: 8px; justify-content: space-between; align-items: center; font-size: 0.8rem; background: #0f172a; padding: 0.5rem; border-radius: 8px;">
-            <span>Bonus: <strong id="myTeamBonusCount">4/4</strong></span>
-            <span>Malus: <strong id="myTeamMalusCount">4/4</strong></span>
+          
+          <div style="background: #0f172a; padding: 0.6rem; border-radius: 8px; margin-bottom: 4px;">
+            <span style="font-size: 0.75rem; color: var(--success); font-weight: bold; display: block; margin-bottom: 2px;">BONUS:</span>
+            <div id="myTeamBonusBadges"></div>
+          </div>
+          <div style="background: #0f172a; padding: 0.6rem; border-radius: 8px;">
+            <span style="font-size: 0.75rem; color: var(--error); font-weight: bold; display: block; margin-bottom: 2px;">MALUS:</span>
+            <div id="myTeamMalusBadges"></div>
           </div>
         </div>
 
+        <!-- Squadra Avversaria -->
         <div>
           <div id="labelOppTeamPerks" style="font-size: 0.85rem; font-weight: bold; margin-bottom: 0.4rem; color: var(--text-muted);">SQUADRA AVVERSARIA</div>
-          <div style="display: flex; gap: 8px; justify-content: space-between; align-items: center; font-size: 0.8rem; background: #0f172a; padding: 0.5rem; border-radius: 8px;">
-            <span>Bonus: <strong id="oppTeamBonusCount">4/4</strong></span>
-            <span>Malus: <strong id="oppTeamMalusCount">4/4</strong></span>
+          
+          <div style="background: #0f172a; padding: 0.6rem; border-radius: 8px; margin-bottom: 4px;">
+            <span style="font-size: 0.75rem; color: var(--success); font-weight: bold; display: block; margin-bottom: 2px;">BONUS:</span>
+            <div id="oppTeamBonusBadges"></div>
+          </div>
+          <div style="background: #0f172a; padding: 0.6rem; border-radius: 8px;">
+            <span style="font-size: 0.75rem; color: var(--error); font-weight: bold; display: block; margin-bottom: 2px;">MALUS:</span>
+            <div id="oppTeamMalusBadges"></div>
           </div>
         </div>
+
       </div>
 
     </div>
@@ -381,7 +391,10 @@
     let currentCategory = null;
     let latestPerksState = null;
 
-    // Timer e BEEP
+    const BONUS_NAMES = ["INIZIALI", "MINUTAGGIO", "FURTO", "SKIP"];
+    const MALUS_NAMES = ["CANTALE", "CATEGORIA", "ZITTO", "4/5"];
+
+    // Timer Variables
     let answerTimer = null;
     let timeLeft = 5;
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -400,7 +413,7 @@
         gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + duration);
         osc.stop(audioCtx.currentTime + duration);
       } catch (e) {
-        console.error("Errore audio beep:", e);
+        console.error("Errore Beep:", e);
       }
     }
 
@@ -409,14 +422,10 @@
     }
 
     function startAnswerTimer() {
-      stopAnswerTimer();
+      stopAnswerTimerLocal();
       timeLeft = 5;
       
-      const hostTimerBox = document.getElementById('hostTimerBox');
-      const playerTimerBox = document.getElementById('playerTimerBox');
-      if (hostTimerBox) hostTimerBox.style.display = 'block';
-      if (playerTimerBox) playerTimerBox.style.display = 'block';
-
+      showTimerDisplays(true);
       updateTimerDisplays(timeLeft);
       playBeepSound(880, 0.15);
 
@@ -429,25 +438,32 @@
           updateTimerDisplays(0);
           playTimeOutSound();
           clearInterval(answerTimer);
-          const st = document.getElementById('playerStatus');
-          if (st) { st.textContent = '❌ TEMPO SCADUTO!'; st.style.color = 'var(--error)'; }
         }
       }, 1000);
     }
 
-    function stopAnswerTimer() {
+    function stopAnswerTimerLocal() {
       if (answerTimer) clearInterval(answerTimer);
-      const hostTimerBox = document.getElementById('hostTimerBox');
-      const playerTimerBox = document.getElementById('playerTimerBox');
-      if (hostTimerBox) hostTimerBox.style.display = 'none';
-      if (playerTimerBox) playerTimerBox.style.display = 'none';
+      showTimerDisplays(false);
+    }
+
+    function stopTimerManual() {
+      socket.emit('triggerTimerStop');
+    }
+
+    function showTimerDisplays(visible) {
+      const displayStyle = visible ? 'block' : 'none';
+      ['timerContainerHostCat', 'playerTimerContainer'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.style.display = displayStyle;
+      });
     }
 
     function updateTimerDisplays(time) {
-      const hVal = document.getElementById('hostTimerVal');
-      const pVal = document.getElementById('playerTimerVal');
-      if (hVal) hVal.textContent = time;
-      if (pVal) pVal.textContent = time;
+      ['timerDisplayHostCat', 'playerTimerDisplay'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = time;
+      });
     }
 
     function onYouTubeIframeAPIReady() {
@@ -478,7 +494,7 @@
     // --- CONTROLLI AUDIO ---
     function triggerNextSong() {
       pauseYouTubeAudio();
-      stopAnswerTimer();
+      stopTimerManual();
       socket.emit('playNextRandomSong');
     }
 
@@ -488,9 +504,9 @@
 
       if (ytPlayer.getPlayerState() === YT.PlayerState.PLAYING) {
         pauseYouTubeAudio();
-        stopAnswerTimer();
+        stopTimerManual();
       } else {
-        stopAnswerTimer();
+        stopTimerManual();
         const startTime = currentActiveSong.startTime || 0;
         const durationMs = (currentActiveSong.duration || 10) * 1000;
 
@@ -501,9 +517,8 @@
         clearTimeout(snippetTimeout);
         snippetTimeout = setTimeout(() => {
           pauseYouTubeAudio();
-          // Nella Fase 2 il timer parte automaticamente allo scadere della canzone!
           if (isPhase2Active) {
-            startAnswerTimer();
+            socket.emit('triggerTimerStart');
           }
         }, durationMs);
       }
@@ -548,7 +563,7 @@
       socket.emit('resetBuzzerQueue');
     }
 
-    // --- FASE 2: CATEGORIE ---
+    // --- FASE 2: CATEGORIE & PERKS ---
     function goToPhase2() {
       socket.emit('startPhase2');
     }
@@ -585,7 +600,7 @@
 
     function finishCategoryRound() {
       pauseYouTubeAudio();
-      stopAnswerTimer();
+      stopTimerManual();
       socket.emit('finishCategoryRound');
     }
 
@@ -613,13 +628,9 @@
       const myTeamKey = myTeam.includes('Rossa') ? 'A' : 'B';
       const oppTeamKey = myTeamKey === 'A' ? 'B' : 'A';
 
-      const myBonusAvail = latestPerksState[myTeamKey].bonus.filter(u => !u).length;
-      const myMalusAvail = latestPerksState[myTeamKey].malus.filter(u => !u).length;
-      const oppBonusAvail = latestPerksState[oppTeamKey].bonus.filter(u => !u).length;
-      const oppMalusAvail = latestPerksState[oppTeamKey].malus.filter(u => !u).length;
-
       const labelMy = document.getElementById('labelMyTeamPerks');
       const labelOpp = document.getElementById('labelOppTeamPerks');
+
       if (labelMy) {
         labelMy.textContent = `LA TUA SQUADRA (${myTeamKey === 'A' ? 'ROSSA' : 'BLU'})`;
         labelMy.style.color = myTeamKey === 'A' ? 'var(--team-a)' : 'var(--team-b)';
@@ -629,15 +640,20 @@
         labelOpp.style.color = oppTeamKey === 'A' ? 'var(--team-a)' : 'var(--team-b)';
       }
 
-      const myB = document.getElementById('myTeamBonusCount');
-      const myM = document.getElementById('myTeamMalusCount');
-      const oppB = document.getElementById('oppTeamBonusCount');
-      const oppM = document.getElementById('oppTeamMalusCount');
+      renderPerkBadges('myTeamBonusBadges', latestPerksState[myTeamKey].bonus, BONUS_NAMES, 'bonus');
+      renderPerkBadges('myTeamMalusBadges', latestPerksState[myTeamKey].malus, MALUS_NAMES, 'malus');
+      renderPerkBadges('oppTeamBonusBadges', latestPerksState[oppTeamKey].bonus, BONUS_NAMES, 'bonus');
+      renderPerkBadges('oppTeamMalusBadges', latestPerksState[oppTeamKey].malus, MALUS_NAMES, 'malus');
+    }
 
-      if (myB) myB.textContent = `${myBonusAvail}/4 disponibili`;
-      if (myM) myM.textContent = `${myMalusAvail}/4 disponibili`;
-      if (oppB) oppB.textContent = `${oppBonusAvail}/4 disponibili`;
-      if (oppM) oppM.textContent = `${oppMalusAvail}/4 disponibili`;
+    function renderPerkBadges(containerId, perksArray, namesArray, type) {
+      const container = document.getElementById(containerId);
+      if (!container) return;
+
+      container.innerHTML = perksArray.map((isUsed, index) => {
+        const badgeClass = isUsed ? `${type}-used` : `${type}-active`;
+        return `<span class="perk-badge ${badgeClass}">${namesArray[index]}</span>`;
+      }).join('');
     }
 
     // --- LOGICA GIOCATORE ---
@@ -663,7 +679,26 @@
       document.getElementById('playerStatus').style.color = 'var(--success)';
     }
 
-    // --- HELPER SINCRONIZZAZIONE ---
+    function renderQueue(queue) {
+      const queueList = document.getElementById('queueList');
+      if (!queueList) return;
+
+      if (queue.length === 0) {
+        queueList.innerHTML = '<p style="color: var(--text-muted); font-style: italic;">In attesa che qualcuno prema il buzzer...</p>';
+        return;
+      }
+
+      queueList.innerHTML = queue.map((entry, index) => `
+        <div class="queue-item ${index === 0 ? 'first' : ''}">
+          <div>
+            <strong>#${index + 1}</strong> ${entry.name} 
+            <span style="font-size: 0.8rem; opacity: 0.85;">(${entry.team})</span>
+          </div>
+          <small style="font-weight: bold;">${entry.time}</small>
+        </div>
+      `).join('');
+    }
+
     function updateScoreboard(scores) {
       ['scoreA', 'scoreA_p2', 'scoreA_p3'].forEach(id => {
         const el = document.getElementById(id);
@@ -675,27 +710,11 @@
       });
     }
 
-    function renderQueue(queue) {
-      const list = document.getElementById('queueList');
-      if (!list) return;
-
-      list.innerHTML = queue.length === 0 
-        ? '<p style="color: var(--text-muted); font-style: italic;">In attesa di prenotazioni...</p>'
-        : queue.map((entry, index) => `
-            <div class="queue-item ${index === 0 ? 'first' : ''}">
-              <div>
-                <strong>#${index + 1}</strong> ${entry.name} 
-                <span style="font-size: 0.8rem; opacity: 0.85;">(${entry.team})</span>
-              </div>
-              <small style="font-weight: bold;">${entry.time}</small>
-            </div>
-          `).join('');
-    }
-
-    // --- RICEZIONE EVENTI SOCKET ---
+    // --- SOCKET EVENTS ---
     socket.on('initGameState', (data) => {
       updateScoreboard(data.scores);
       renderQueue(data.buzzerQueue);
+      latestPerksState = data.perksState;
       if (data.currentSong) {
         currentActiveSong = data.currentSong;
         document.getElementById('songCounter').textContent = `Canzone ${data.progressCount} di ${data.totalSongs}`;
@@ -709,6 +728,7 @@
       document.getElementById('songCounter').textContent = `Canzone ${data.progressCount} di ${data.totalSongs}`;
       document.getElementById('songSolution').textContent = "❓ ??? - ???";
       document.getElementById('btnPlayAudio').disabled = false;
+      stopTimerManual();
       if (isYtReady && currentActiveSong.youtubeId) ytPlayer.cueVideoById(currentActiveSong.youtubeId);
     });
 
@@ -717,6 +737,7 @@
       document.getElementById('songSolution').textContent = "Tutte le canzoni sono state estratte!";
       document.getElementById('btnPlayAudio').disabled = true;
       pauseYouTubeAudio();
+      stopTimerManual();
       const btn = document.getElementById('btnGoToPhase2');
       if (btn) btn.style.display = 'block';
     });
@@ -728,9 +749,12 @@
       updatePerksDisplay(data.perksState);
       updatePlayerPerksDisplay();
 
-      // Nasconde il BUZZER sugli smartphone e mostra il pannello Bonus/Malus
       const buzzerBtn = document.getElementById('buzzerBtn');
       if (buzzerBtn) buzzerBtn.style.display = 'none';
+
+      const statusEl = document.getElementById('playerStatus');
+      if (statusEl) statusEl.textContent = 'Fase 2 in corso!';
+
       const p2Panel = document.getElementById('playerPhase2Panel');
       if (p2Panel) p2Panel.style.display = 'block';
 
@@ -750,6 +774,7 @@
       const activeTitle = document.getElementById('activeCategoryTitle');
       if (activeTitle) {
         activeTitle.textContent = `${currentCategory.icon} ${currentCategory.name}`;
+        
         const listEl = document.getElementById('categorySongsList');
         listEl.innerHTML = currentCategory.songs.map((song, i) => `
           <div class="song-row">
@@ -772,7 +797,6 @@
       renderCategories(data.selectedCategories, data.currentTurnTeam);
       const mobileCatEl = document.getElementById('mobileActiveCategory');
       if (mobileCatEl) mobileCatEl.textContent = "In attesa di selezione...";
-      
       const catScreen = document.getElementById('categoriesScreen');
       if (catScreen) showScreen('categoriesScreen');
     });
@@ -786,18 +810,28 @@
     socket.on('buzzerQueueUpdated', (queue) => {
       renderQueue(queue);
 
-      // Nella Fase 1: interrompe l'audio quando un giocatore clicca BUZZ!
       if (!isPhase2Active && queue.length === 1) {
         pauseYouTubeAudio();
       }
 
-      if (queue.length === 0) {
+      if (!isPhase2Active && queue.length === 0) {
         hasBuzzed = false;
-        const btn = document.getElementById('buzzerBtn');
-        if (btn) btn.classList.remove('disabled');
-        const st = document.getElementById('playerStatus');
-        if (st) { st.textContent = 'Pronto per il gioco!'; st.style.color = 'var(--text-muted)'; }
+        const buzzerBtn = document.getElementById('buzzerBtn');
+        if (buzzerBtn) buzzerBtn.classList.remove('disabled');
+        const status = document.getElementById('playerStatus');
+        if (status) {
+          status.textContent = 'Pronto per il buzzer!';
+          status.style.color = 'var(--text-muted)';
+        }
       }
+    });
+
+    socket.on('startTimerOnClients', () => {
+      startAnswerTimer();
+    });
+
+    socket.on('stopTimerOnClients', () => {
+      stopAnswerTimerLocal();
     });
 
     socket.on('scoreUpdated', (scores) => updateScoreboard(scores));
