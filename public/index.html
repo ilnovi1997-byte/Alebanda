@@ -76,9 +76,14 @@
     .btn-perk.malus { background: #ef4444; }
     .btn-perk.used { opacity: 0.3; text-decoration: line-through; filter: grayscale(0.8); }
 
-    /* Minutaggio Controls Box */
+    /* Control Box Minutaggio & Timer Manuale */
     .minutaggio-box {
       background: #0f172a; border: 2px solid var(--accent); padding: 1rem;
+      border-radius: 12px; margin-top: 1rem; text-align: center;
+    }
+
+    .manual-timer-box {
+      background: #0f172a; border: 1px solid #334155; padding: 1rem;
       border-radius: 12px; margin-top: 1rem; text-align: center;
     }
 
@@ -133,7 +138,7 @@
       </div>
     </div>
 
-    <!-- BOX PERSONALIZZAZIONE NOMI SQUADRE DALL'HOMEPAGE -->
+    <!-- BOX PERSONALIZZAZIONE NOMI SQUADRE -->
     <div style="background: var(--card-bg); padding: 1.2rem; border-radius: 14px; border: 1px solid #334155; margin-top: 2rem; width: 100%; max-width: 540px; text-align: center;">
       <h3 style="color: var(--accent); margin-bottom: 0.8rem; font-size: 1.1rem;">✏️ Personalizza Nomi Squadre</h3>
       <div style="display: flex; gap: 10px; justify-content: center; margin-bottom: 0.8rem;">
@@ -179,6 +184,13 @@
           </div>
         </div>
 
+        <!-- Timer Visibile Schermo Host Fase 1 -->
+        <div id="timerContainerHostPhase1" class="timer-box" style="display: none;">
+          <div style="font-size: 0.85rem; text-transform: uppercase; color: #fca5a5; font-weight: bold;">Tempo Rimanente</div>
+          <div class="timer-num" id="timerDisplayHostPhase1">5</div>
+          <button class="btn-score" style="background: #0f172a; margin-top: 0.5rem;" onclick="stopTimerManual()">⏹️ Ferma Timer</button>
+        </div>
+
         <div class="buzzer-queue">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
             <h3>Ordini di Prenotazione Buzzer:</h3>
@@ -193,10 +205,19 @@
       </div>
 
       <div class="game-box">
-        <h3>Info Fase 1</h3>
-        <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 0.5rem; line-height: 1.5;">
-          I giocatori usano il pulsante BUZZ! per prenotarsi.<br>Il primo che clicca ferma l'audio!
-        </p>
+        <h3>Pannello Controlli Host</h3>
+
+        <!-- Riquadro Timer Manuale Host -->
+        <div class="manual-timer-box">
+          <h4 style="color: var(--accent); margin-bottom: 0.5rem;">⏱️ Timer Manuale Host</h4>
+          <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.6rem;">Imposta un conto alla rovescia a schermo:</p>
+          <div style="display: flex; gap: 6px; justify-content: center; align-items: center;">
+            <input type="number" id="manualTimerInputPhase1" value="5" min="1" max="300" style="width: 70px; padding: 0.5rem; border-radius: 6px; background: #0f172a; color: white; border: 1px solid #334155; text-align: center; font-weight: bold;">
+            <span style="font-size: 0.85rem;">sec.</span>
+            <button class="btn-score" style="background: var(--accent); color: black;" onclick="startCustomTimer('manualTimerInputPhase1')">▶️ Avvia</button>
+            <button class="btn-score" style="background: var(--error);" onclick="stopTimerManual()">⏹️ Ferma</button>
+          </div>
+        </div>
 
         <button class="btn-score" style="background: var(--error); color: white; width: 100%; margin-top: 2rem; padding: 0.8rem;" onclick="resetFullGame()">
           ⚠️ Azzera Partita e Ricomincia
@@ -232,6 +253,13 @@
               <button class="btn-score" onclick="updateScore('B', 1)">+1</button>
             </div>
           </div>
+        </div>
+
+        <!-- Timer Visibile Schermo Host Fase 2 Grid -->
+        <div id="timerContainerHostPhase2Grid" class="timer-box" style="display: none;">
+          <div style="font-size: 0.85rem; text-transform: uppercase; color: #fca5a5; font-weight: bold;">Tempo Rimanente</div>
+          <div class="timer-num" id="timerDisplayHostPhase2Grid">5</div>
+          <button class="btn-score" style="background: #0f172a; margin-top: 0.5rem;" onclick="stopTimerManual()">⏹️ Ferma Timer</button>
         </div>
 
         <div id="categoriesGrid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 0.8rem;"></div>
@@ -291,6 +319,18 @@
           </div>
         </div>
 
+        <!-- Timer Manuale Host Fase 2 -->
+        <div class="manual-timer-box">
+          <h4 style="color: var(--accent); margin-bottom: 0.5rem;">⏱️ Timer Manuale Host</h4>
+          <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.6rem;">Imposta un conto alla rovescia a schermo:</p>
+          <div style="display: flex; gap: 6px; justify-content: center; align-items: center;">
+            <input type="number" id="manualTimerInputPhase2" value="5" min="1" max="300" style="width: 70px; padding: 0.5rem; border-radius: 6px; background: #0f172a; color: white; border: 1px solid #334155; text-align: center; font-weight: bold;">
+            <span style="font-size: 0.85rem;">sec.</span>
+            <button class="btn-score" style="background: var(--accent); color: black;" onclick="startCustomTimer('manualTimerInputPhase2')">▶️ Avvia</button>
+            <button class="btn-score" style="background: var(--error);" onclick="stopTimerManual()">⏹️ Ferma</button>
+          </div>
+        </div>
+
         <button class="btn-score" style="background: var(--error); color: white; width: 100%; margin-top: 1.5rem; padding: 0.8rem;" onclick="resetFullGame()">
           ⚠️ Azzera Partita e Ricomincia
         </button>
@@ -329,7 +369,7 @@
         </div>
 
         <div id="timerContainerHostCat" class="timer-box" style="display: none;">
-          <div style="font-size: 0.85rem; text-transform: uppercase; color: #fca5a5; font-weight: bold;">Tempo per rispondere</div>
+          <div style="font-size: 0.85rem; text-transform: uppercase; color: #fca5a5; font-weight: bold;">Tempo Rimanente</div>
           <div class="timer-num" id="timerDisplayHostCat">5</div>
           <button class="btn-score" style="background: #0f172a; margin-top: 0.5rem;" onclick="stopTimerManual()">⏹️ Ferma Timer</button>
         </div>
@@ -342,6 +382,17 @@
         <p style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.5;">
           Clicca su <strong>▶️ Riproduci</strong>. Allo scadere dell'anteprima parte il timer di 5 secondi per la risposta.
         </p>
+
+        <!-- Timer Manuale Categoria Attiva -->
+        <div class="manual-timer-box">
+          <h4 style="color: var(--accent); margin-bottom: 0.5rem;">⏱️ Timer Manuale Host</h4>
+          <div style="display: flex; gap: 6px; justify-content: center; align-items: center;">
+            <input type="number" id="manualTimerInputCat" value="5" min="1" max="300" style="width: 70px; padding: 0.5rem; border-radius: 6px; background: #0f172a; color: white; border: 1px solid #334155; text-align: center; font-weight: bold;">
+            <span style="font-size: 0.85rem;">sec.</span>
+            <button class="btn-score" style="background: var(--accent); color: black;" onclick="startCustomTimer('manualTimerInputCat')">▶️ Avvia</button>
+            <button class="btn-score" style="background: var(--error);" onclick="stopTimerManual()">⏹️ Ferma</button>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -365,7 +416,7 @@
       <div class="buzzer-btn" id="buzzerBtn" onclick="pressBuzzer()">BUZZ!</div>
 
       <div id="playerTimerContainer" class="timer-box" style="display: none; margin-top: 1rem;">
-        <span style="font-size: 0.85rem; color: #fca5a5; font-weight: bold; text-transform: uppercase;">TEMPO PER RISPONDERE:</span>
+        <span style="font-size: 0.85rem; color: #fca5a5; font-weight: bold; text-transform: uppercase;">TEMPO RIMANENTE:</span>
         <div id="playerTimerDisplay" class="timer-num" style="font-size: 3rem;">5</div>
       </div>
 
@@ -413,7 +464,7 @@
   <script>
     const socket = io();
 
-    let myTeamKey = 'A'; // 'A' o 'B'
+    let myTeamKey = 'A';
     let myTeam = '';
     let myName = '';
     let hasBuzzed = false;
@@ -511,9 +562,9 @@
       playBeepSound(150, 0.6, 'sawtooth');
     }
 
-    function startAnswerTimer() {
+    function startAnswerTimer(duration = 5) {
       stopAnswerTimerLocal();
-      timeLeft = 5;
+      timeLeft = duration;
       
       showTimerDisplays(true);
       updateTimerDisplays(timeLeft);
@@ -537,20 +588,28 @@
       showTimerDisplays(false);
     }
 
+    function startCustomTimer(inputId) {
+      const input = document.getElementById(inputId);
+      const seconds = input ? parseInt(input.value, 10) : 5;
+      if (isNaN(seconds) || seconds <= 0) return alert("Inserisci un numero di secondi valido!");
+      
+      socket.emit('triggerTimerStart', { duration: seconds });
+    }
+
     function stopTimerManual() {
       socket.emit('triggerTimerStop');
     }
 
     function showTimerDisplays(visible) {
       const displayStyle = visible ? 'block' : 'none';
-      ['timerContainerHostCat', 'playerTimerContainer'].forEach(id => {
+      ['timerContainerHostPhase1', 'timerContainerHostPhase2Grid', 'timerContainerHostCat', 'playerTimerContainer'].forEach(id => {
         const el = document.getElementById(id);
         if (el) el.style.display = displayStyle;
       });
     }
 
     function updateTimerDisplays(time) {
-      ['timerDisplayHostCat', 'playerTimerDisplay'].forEach(id => {
+      ['timerDisplayHostPhase1', 'timerDisplayHostPhase2Grid', 'timerDisplayHostCat', 'playerTimerDisplay'].forEach(id => {
         const el = document.getElementById(id);
         if (el) el.textContent = time;
       });
@@ -622,7 +681,7 @@
         snippetTimeout = setTimeout(() => {
           pauseYouTubeAudio();
           if (isPhase2Active) {
-            socket.emit('triggerTimerStart');
+            socket.emit('triggerTimerStart', { duration: 5 });
           }
         }, durationMs);
       }
@@ -1012,8 +1071,9 @@
       }
     });
 
-    socket.on('startTimerOnClients', () => {
-      startAnswerTimer();
+    socket.on('startTimerOnClients', (data) => {
+      const duration = (data && data.duration) ? data.duration : 5;
+      startAnswerTimer(duration);
     });
 
     socket.on('stopTimerOnClients', () => {

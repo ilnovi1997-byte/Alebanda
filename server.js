@@ -266,9 +266,10 @@ io.on("connection", (socket) => {
     );
   });
 
-  // 12. SINCRONIZZAZIONE TIMER 5 SECONDI
-  socket.on("triggerTimerStart", () => {
-    io.emit("startTimerOnClients");
+  // 12. SINCRONIZZAZIONE TIMER PERSONALIZZATO HOST (con durata configurabile)
+  socket.on("triggerTimerStart", (data) => {
+    const seconds = data && data.duration ? parseInt(data.duration, 10) : 5;
+    io.emit("startTimerOnClients", { duration: seconds });
   });
 
   socket.on("triggerTimerStop", () => {
