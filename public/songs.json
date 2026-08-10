@@ -1,26 +1,234 @@
 [
   { 
     "id": 1, 
-    "title": "Albachiara", 
-    "artist": "Vasco Rossi", 
-    "youtubeId": "wXFFtkQZlo8", 
-    "startTime": 15, 
-    "duration": 10 
+    "title": "Xdono", 
+    "artist": "Tiziano Ferro", 
+    "youtubeId": "LLLTGxDHJAk", 
+    "startTime": 0, 
+    "duration": 60 
   },
   { 
     "id": 2, 
-    "title": "50 Special", 
-    "artist": "Lùnapop", 
-    "youtubeId": "b2GlV6Ap-3g", 
-    "startTime": 20, 
-    "duration": 10 
+    "title": "E Ti Vengo A Cercare", 
+    "artist": "Franco Battiato", 
+    "youtubeId": "EBwVbvFDM_k", 
+    "startTime": 0, 
+    "duration": 60 
   },
   { 
     "id": 3, 
-    "title": "Nel blu dipinto di blu", 
-    "artist": "Domenico Modugno", 
-    "youtubeId": "8VGy6OLz0WI", 
-    "startTime": 10, 
-    "duration": 10 
+    "title": "La Mia Banda Suona Il Rock", 
+    "artist": "Ivano Fossati", 
+    "youtubeId": "71jbknjw8Ps", 
+    "startTime": 0, 
+    "duration": 60 
+  },
+  { 
+    "id": 4, 
+    "title": "Lontano Dagli Occhi", 
+    "artist": "Sergio Endrigo", 
+    "youtubeId": "sr6fB6ESrT8", 
+    "startTime": 0, 
+    "duration": 60 
+  },
+  { 
+    "id": 5, 
+    "title": "Come Saprei", 
+    "artist": "Giorgia", 
+    "youtubeId": "_cODecP3-cY", 
+    "startTime": 0, 
+    "duration": 60 
+  },
+  { 
+    "id": 6, 
+    "title": "Anche Fragile", 
+    "artist": "Elisa", 
+    "youtubeId": "BU__9ElLPsU", 
+    "startTime": 0, 
+    "duration": 60 
+  },
+  { 
+    "id": 7, 
+    "title": "Quando Finisce Un Amore", 
+    "artist": "Riccardo Cocciante", 
+    "youtubeId": "ANIs1m0ehLY", 
+    "startTime": 0, 
+    "duration": 60 
+  },
+  { 
+    "id": 8, 
+    "title": "Il Mio Corpo Che Cambia", 
+    "artist": "Litfiba", 
+    "youtubeId": "YwNgDesu_9g", 
+    "startTime": 0, 
+    "duration": 60 
+  },
+  { 
+    "id": 9, 
+    "title": "Vieni Da Me", 
+    "artist": "Le Vibrazioni", 
+    "youtubeId": "LLU_6WEYGIE", 
+    "startTime": 0, 
+    "duration": 60 
+  },
+  { 
+    "id": 10, 
+    "title": "Porno", 
+    "artist": "Bambole Di Pezza", 
+    "youtubeId": "KDjhZRS2nso", 
+    "startTime": 0, 
+    "duration": 60 
+  },
+  { 
+    "id": 11, 
+    "title": "Stormi", 
+    "artist": "Iosonouncane", 
+    "youtubeId": "iwRLrz5Uceg", 
+    "startTime": 0, 
+    "duration": 60 
+  },
+  { 
+    "id": 12, 
+    "title": "Non Potrei Mai", 
+    "artist": "Fast Animals and Slow Kids", 
+    "youtubeId": "LS9tPvwQGDU", 
+    "startTime": 0, 
+    "duration": 60 
+  },
+  { 
+    "id": 13, 
+    "title": "Berlino", 
+    "artist": "Ernia", 
+    "youtubeId": "L18bC_BQnGk", 
+    "startTime": 0, 
+    "duration": 60 
+  },
+  { 
+    "id": 14, 
+    "title": "My Love Song", 
+    "artist": "Noyz Narcos", 
+    "youtubeId": "HMaAqe3MXBM", 
+    "startTime": 0, 
+    "duration": 60 
+  },
+  { 
+    "id": 15, 
+    "title": "Malamente", 
+    "artist": "Tedua", 
+    "youtubeId": "StflFjBSTjk", 
+    "startTime": 0, 
+    "duration": 60 
+  },
+  { 
+    "id": 16, 
+    "title": "Paint It, Black", 
+    "artist": "The Rolling Stones", 
+    "youtubeId": "bEqYpBZ5nEc", 
+    "startTime": 0, 
+    "duration": 60 
+  },
+  { 
+    "id": 17, 
+    "title": "The Great Gig In The Sky", 
+    "artist": "Pink Floyd", 
+    "youtubeId": "Vc5tbNdnNJo", 
+    "startTime": 0, 
+    "duration": 60 
+  },
+  { 
+    "id": 18, 
+    "title": "Walk Of Life", 
+    "artist": "Dire Straits", 
+    "youtubeId": "EEdDWQAfC44", 
+    "startTime": 0, 
+    "duration": 60 
+  },
+  { 
+    "id": 19, 
+    "title": "Let Down", 
+    "artist": "Radiohead", 
+    "youtubeId": "ZVgHPSyEIqk", 
+    "startTime": 0, 
+    "duration": 60 
+  },
+  { 
+    "id": 20, 
+    "title": "Supermassive Black Hole", 
+    "artist": "Muse", 
+    "youtubeId": "rinkviEmeXk", 
+    "startTime": 0, 
+    "duration": 60 
+  },
+  { 
+    "id": 21, 
+    "title": "Elastic Heart", 
+    "artist": "Sia", 
+    "youtubeId": "noHygl5CGEY", 
+    "startTime": 0, 
+    "duration": 60 
+  },
+  { 
+    "id": 22, 
+    "title": "Die For You", 
+    "artist": "The Weeknd", 
+    "youtubeId": "YQ-qToZUybM", 
+    "startTime": 0, 
+    "duration": 60 
+  },
+  { 
+    "id": 23, 
+    "title": "Do I Wanna Know?", 
+    "artist": "Arctic Monkeys", 
+    "youtubeId": "bpOSxM0rNPM", 
+    "startTime": 0, 
+    "duration": 60 
+  },
+  { 
+    "id": 24, 
+    "title": "Stay", 
+    "artist": "Rihanna", 
+    "youtubeId": "_bXqoIzH0N8", 
+    "startTime": 0, 
+    "duration": 60 
+  },
+  { 
+    "id": 25, 
+    "title": "Hot N Cold", 
+    "artist": "Katy Perry", 
+    "youtubeId": "K9udREBvMdE", 
+    "startTime": 0, 
+    "duration": 60 
+  },
+  { 
+    "id": 26, 
+    "title": "Just The Way You Are", 
+    "artist": "Bruno Mars", 
+    "youtubeId": "u7XjPmN-tHw", 
+    "startTime": 0, 
+    "duration": 60 
+  },
+  { 
+    "id": 27, 
+    "title": "Rehab", 
+    "artist": "Amy Winehouse", 
+    "youtubeId": "PdxH9DkUIjM", 
+    "startTime": 0, 
+    "duration": 60 
+  },
+  { 
+    "id": 28, 
+    "title": "Hit 'Em Up", 
+    "artist": "2Pac", 
+    "youtubeId": "GIycdwjeLUk", 
+    "startTime": 0, 
+    "duration": 60 
+  },
+  { 
+    "id": 29, 
+    "title": "Butterfly Effect", 
+    "artist": "Travis Scott", 
+    "youtubeId": "c9qBHNKfiJw", 
+    "startTime": 0, 
+    "duration": 60 
   }
 ]
