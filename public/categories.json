@@ -2,7 +2,7 @@
   {
     "id": 1,
     "name": "Billions",
-    "icon": "📻",
+    "icon": "💎",
     "songs": [
       { "id": 101, "title": "DEATH BED", "artist": "POWFU", "youtubeId": "YJET8KicY9g", "startTime": 0, "duration": 45 },
       { "id": 102, "title": "Clint Eastwood", "artist": "GORILLAZ", "youtubeId": "J6jn6d4n4lc", "startTime": 0, "duration": 45 },
@@ -14,7 +14,7 @@
   {
     "id": 2,
     "name": "Rock",
-    "icon": "👾",
+    "icon": "🎸",
     "songs": [
       { "id": 201, "title": "Chop Suey", "artist": "System Of A Down", "youtubeId": "EsgmN9PKr_Y", "startTime": 0, "duration": 45 },
       { "id": 202, "title": "Song 2", "artist": "Blur", "youtubeId": "Pu6Mid2a428", "startTime": 0, "duration": 45 },
@@ -26,7 +26,7 @@
   {
     "id": 3,
     "name": "Internazionali 80",
-    "icon": "👾",
+    "icon": "🕺",
     "songs": [
       { "id": 301, "title": "You Spin Me Round", "artist": "Dead or Alive", "youtubeId": "MbUK7tRP4u0", "startTime": 0, "duration": 45 },
       { "id": 302, "title": "Everybody Wants to Rule the World", "artist": "Tears for Fears", "youtubeId": "tSBWmxwT8So", "startTime": 0, "duration": 45 },
@@ -38,7 +38,7 @@
   {
     "id": 4,
     "name": "One Hit Wonder",
-    "icon": "👾",
+    "icon": "🌟",
     "songs": [
       { "id": 401, "title": "Pumped Up Kicks", "artist": "Foster The People", "youtubeId": "0DOv0-2yyfE", "startTime": 0, "duration": 45 },
       { "id": 402, "title": "Beach Weather", "artist": "Sex, Drugs, Etc", "youtubeId": "q_3gUUioyjs", "startTime": 0, "duration": 45 },
@@ -50,7 +50,7 @@
   {
     "id": 5,
     "name": "TikTok",
-    "icon": "👾",
+    "icon": "📱",
     "songs": [
       { "id": 501, "title": "Lush Life", "artist": "Zara Larson", "youtubeId": "aAXLhvrfaT8", "startTime": 0, "duration": 45 },
       { "id": 502, "title": "back to friends", "artist": "Sombr", "youtubeId": "Pb6r6I1dmJA", "startTime": 0, "duration": 45 },
@@ -62,10 +62,10 @@
   {
     "id": 6,
     "name": "Cantautorato",
-    "icon": "👾",
+    "icon": "✍️",
     "songs": [
       { "id": 601, "title": "L'anno che verrà", "artist": "Lucio Dalla", "youtubeId": "VASTJAdvwMA", "startTime": 0, "duration": 45 },
-      { "id": 602, "title": "Diamante", "artist": "Zucchero", "youtubeId": "80pf0Y-QE8g", "startTime": 37, "duration": 45 },
+      { "id": 602, "title": "Diamante", "artist": "Zucchero", "youtubeId": "80pf0Y-QE8g", "startTime": 0, "duration": 45 },
       { "id": 603, "title": "Via con me", "artist": "Paolo Conte", "youtubeId": "0o_rGhcBgME", "startTime": 0, "duration": 45 },
       { "id": 604, "title": "Sotto il segno dei pesci", "artist": "Antonello Venditti", "youtubeId": "J6bGSdYfH08", "startTime": 0, "duration": 45 },
       { "id": 605, "title": "Cirano", "artist": "Francesco Guccini", "youtubeId": "hmBTS9-IOcU", "startTime": 0, "duration": 45 }
@@ -74,7 +74,7 @@
   {
     "id": 7,
     "name": "Trap/Rap",
-    "icon": "👾",
+    "icon": "🎤",
     "songs": [
       { "id": 701, "title": "Chic", "artist": "Izi", "youtubeId": "Nww6XRfFgkI", "startTime": 0, "duration": 45 },
       { "id": 702, "title": "Tristano e Isotta", "artist": "Kid yugi", "youtubeId": "w5SPLF7R8ek", "startTime": 0, "duration": 45 },
@@ -86,7 +86,7 @@
   {
     "id": 8,
     "name": "Sanremo",
-    "icon": "👾",
+    "icon": "💐",
     "songs": [
       { "id": 801, "title": "La genesi del tuo colore", "artist": "Irama", "youtubeId": "p7H-hWbDcIs", "startTime": 0, "duration": 45 },
       { "id": 802, "title": "Gli uomini non cambiano", "artist": "Mia Martini", "youtubeId": "fCp2usUYmHI", "startTime": 0, "duration": 45 },
@@ -98,7 +98,7 @@
   {
     "id": 9,
     "name": "Indie",
-    "icon": "👾",
+    "icon": "☕",
     "songs": [
       { "id": 901, "title": "La fine dei vent'anni", "artist": "Motta", "youtubeId": "CYIgLu2Ga_s", "startTime": 0, "duration": 45 },
       { "id": 902, "title": "Tetris", "artist": "Pinguini Tattici Nucleari", "youtubeId": "_a7b_eJqWsI", "startTime": 0, "duration": 45 },
@@ -110,7 +110,7 @@
   {
     "id": 10,
     "name": "MISTERY",
-    "icon": "👾",
+    "icon": "❓",
     "songs": [
       { "id": 1001, "title": "SUPERMAN", "artist": "main theme", "youtubeId": "QmHhIDUrdVA", "startTime": 0, "duration": 45 },
       { "id": 1002, "title": "il favoloso mondo di Amelie", "artist": "main theme", "youtubeId": "znfYwABeSZ0", "startTime": 0, "duration": 45 },
