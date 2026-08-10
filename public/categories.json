@@ -1,26 +1,122 @@
 [
   {
     "id": 1,
-    "name": "Pop Italiani anni '90",
+    "name": "Billions",
     "icon": "📻",
     "songs": [
-      { "id": 101, "title": "50 Special", "artist": "Lùnapop", "youtubeId": "zF____9iI-Q", "startTime": 15, "duration": 10 },
-      { "id": 102, "title": "Mare Mare", "artist": "Luca Carboni", "youtubeId": "L3wKzyIN1yk", "startTime": 10, "duration": 10 },
-      { "id": 103, "title": "Laura non c'è", "artist": "Nek", "youtubeId": "t46S3sP6_1M", "startTime": 20, "duration": 10 },
-      { "id": 104, "title": "Hanno ucciso l'Uomo Ragno", "artist": "883", "youtubeId": "zF____9iI-Q", "startTime": 5, "duration": 10 },
-      { "id": 105, "title": "La solitudine", "artist": "Laura Pausini", "youtubeId": "L3wKzyIN1yk", "startTime": 12, "duration": 10 }
+      { "id": 101, "title": "DEATH BED", "artist": "POWFU", "youtubeId": "YJET8KicY9g", "startTime": 0, "duration": 45 },
+      { "id": 102, "title": "Clint Eastwood", "artist": "GORILLAZ", "youtubeId": "J6jn6d4n4lc", "startTime": 0, "duration": 45 },
+      { "id": 103, "title": "Cradles", "artist": "Sub Urban", "youtubeId": "OE140zsQ08I", "startTime": 0, "duration": 45 },
+      { "id": 104, "title": "Glimpse of Us", "artist": "Joji", "youtubeId": "_x3UltzBxjw", "startTime": 0, "duration": 45 },
+      { "id": 105, "title": "The Less I Know The Better", "artist": "Tame Impala", "youtubeId": "O2lzmpEs29M", "startTime": 0, "duration": 45 }
     ]
   },
   {
     "id": 2,
-    "name": "Sigle dei Cartoni Animati",
+    "name": "Rock",
     "icon": "👾",
     "songs": [
-      { "id": 201, "title": "Dragon Ball", "artist": "Giorgio Vanni", "youtubeId": "t46S3sP6_1M", "startTime": 10, "duration": 10 },
-      { "id": 202, "title": "Pokémon", "artist": "Giorgio Vanni", "youtubeId": "zF____9iI-Q", "startTime": 5, "duration": 10 },
-      { "id": 203, "title": "Lupin III", "artist": "Castellina Pasi", "youtubeId": "L3wKzyIN1yk", "startTime": 15, "duration": 10 },
-      { "id": 204, "title": "Detective Conan", "artist": "Giorgio Vanni", "youtubeId": "t46S3sP6_1M", "startTime": 10, "duration": 10 },
-      { "id": 205, "title": "One Piece", "artist": "Giorgio Vanni", "youtubeId": "zF____9iI-Q", "startTime": 8, "duration": 10 }
+      { "id": 201, "title": "Chop Suey", "artist": "System Of A Down", "youtubeId": "EsgmN9PKr_Y", "startTime": 0, "duration": 45 },
+      { "id": 202, "title": "Song 2", "artist": "Blur", "youtubeId": "Pu6Mid2a428", "startTime": 0, "duration": 45 },
+      { "id": 203, "title": "Mr. Brightside", "artist": "The Killers", "youtubeId": "j8tZs6G_h7U", "startTime": 0, "duration": 45 },
+      { "id": 204, "title": "Take Me Out", "artist": "Franz Ferdinand", "youtubeId": "A8IcedBzs14", "startTime": 0, "duration": 45 },
+      { "id": 205, "title": "Thunderstruck", "artist": "AC/DC", "youtubeId": "skwZ5MQ7CfE", "startTime": 0, "duration": 45 }
+    ]
+  },
+  {
+    "id": 3,
+    "name": "Internazionali 80",
+    "icon": "👾",
+    "songs": [
+      { "id": 301, "title": "You Spin Me Round", "artist": "Dead or Alive", "youtubeId": "MbUK7tRP4u0", "startTime": 0, "duration": 45 },
+      { "id": 302, "title": "Everybody Wants to Rule the World", "artist": "Tears for Fears", "youtubeId": "tSBWmxwT8So", "startTime": 0, "duration": 45 },
+      { "id": 303, "title": "Forever Young", "artist": "Alphaville", "youtubeId": "-ym0I1D8PfA", "startTime": 0, "duration": 45 },
+      { "id": 304, "title": "Don't Dream It's Over", "artist": "Crowded House", "youtubeId": "TLLIGimgXSY", "startTime": 0, "duration": 45 },
+      { "id": 305, "title": "Your Love", "artist": "The Outfield", "youtubeId": "Z0OXRP-B200", "startTime": 0, "duration": 45 }
+    ]
+  },
+  {
+    "id": 4,
+    "name": "One Hit Wonder",
+    "icon": "👾",
+    "songs": [
+      { "id": 401, "title": "Pumped Up Kicks", "artist": "Foster The People", "youtubeId": "0DOv0-2yyfE", "startTime": 0, "duration": 45 },
+      { "id": 402, "title": "Beach Weather", "artist": "Sex, Drugs, Etc", "youtubeId": "q_3gUUioyjs", "startTime": 0, "duration": 45 },
+      { "id": 403, "title": "Crazy", "artist": "Gnarls Barkley", "youtubeId": "U0EW0s1fN-8", "startTime": 0, "duration": 45 },
+      { "id": 404, "title": "Beautiful Things", "artist": "Benson Boone", "youtubeId": "qKOMEWKrvb4", "startTime": 0, "duration": 45 },
+      { "id": 405, "title": "What's Up?", "artist": "4 Non Blondes", "youtubeId": "ncNMjAPXXcQ", "startTime": 0, "duration": 45 }
+    ]
+  },
+  {
+    "id": 5,
+    "name": "TikTok",
+    "icon": "👾",
+    "songs": [
+      { "id": 501, "title": "Lush Life", "artist": "Zara Larson", "youtubeId": "aAXLhvrfaT8", "startTime": 0, "duration": 45 },
+      { "id": 502, "title": "back to friends", "artist": "Sombr", "youtubeId": "Pb6r6I1dmJA", "startTime": 0, "duration": 45 },
+      { "id": 503, "title": "fermate la guerra", "artist": "il vagabondo detto houston", "youtubeId": "qbW90Ptemr0", "startTime": 0, "duration": 45 },
+      { "id": 504, "title": "that's so true", "artist": "gracie adams", "youtubeId": "K57UcxcvqnM", "startTime": 0, "duration": 45 },
+      { "id": 505, "title": "self aware", "artist": "temper city", "youtubeId": "9wXLEQm_RTY", "startTime": 0, "duration": 45 }
+    ]
+  },
+  {
+    "id": 6,
+    "name": "Cantautorato",
+    "icon": "👾",
+    "songs": [
+      { "id": 601, "title": "L'anno che verrà", "artist": "Lucio Dalla", "youtubeId": "VASTJAdvwMA", "startTime": 0, "duration": 45 },
+      { "id": 602, "title": "Diamante", "artist": "Zucchero", "youtubeId": "80pf0Y-QE8g", "startTime": 37, "duration": 45 },
+      { "id": 603, "title": "Via con me", "artist": "Paolo Conte", "youtubeId": "0o_rGhcBgME", "startTime": 0, "duration": 45 },
+      { "id": 604, "title": "Sotto il segno dei pesci", "artist": "Antonello Venditti", "youtubeId": "J6bGSdYfH08", "startTime": 0, "duration": 45 },
+      { "id": 605, "title": "Cirano", "artist": "Francesco Guccini", "youtubeId": "hmBTS9-IOcU", "startTime": 0, "duration": 45 }
+    ]
+  },
+  {
+    "id": 7,
+    "name": "Trap/Rap",
+    "icon": "👾",
+    "songs": [
+      { "id": 701, "title": "Chic", "artist": "Izi", "youtubeId": "Nww6XRfFgkI", "startTime": 0, "duration": 45 },
+      { "id": 702, "title": "Tristano e Isotta", "artist": "Kid yugi", "youtubeId": "w5SPLF7R8ek", "startTime": 0, "duration": 45 },
+      { "id": 703, "title": "King del Rap", "artist": "Marracash", "youtubeId": "6FtzpY4iOO8", "startTime": 0, "duration": 45 },
+      { "id": 704, "title": "Volgare", "artist": "Lazza/Tedua", "youtubeId": "5qgOvYfD2wQ", "startTime": 0, "duration": 45 },
+      { "id": 705, "title": "Veleno 6", "artist": "Madman/Gemitaiz", "youtubeId": "qEVpoqAoS30", "startTime": 0, "duration": 45 }
+    ]
+  },
+  {
+    "id": 8,
+    "name": "Sanremo",
+    "icon": "👾",
+    "songs": [
+      { "id": 801, "title": "La genesi del tuo colore", "artist": "Irama", "youtubeId": "p7H-hWbDcIs", "startTime": 0, "duration": 45 },
+      { "id": 802, "title": "Gli uomini non cambiano", "artist": "Mia Martini", "youtubeId": "fCp2usUYmHI", "startTime": 0, "duration": 45 },
+      { "id": 803, "title": "Mai dire mai", "artist": "Willie Peyote", "youtubeId": "c4QQEHtKKyE", "startTime": 0, "duration": 45 },
+      { "id": 804, "title": "Gente di mare", "artist": "Umberto Tozzi & Raf", "youtubeId": "6Zv-OuJpx50", "startTime": 0, "duration": 45 },
+      { "id": 805, "title": "Nonno Hollywood", "artist": "Enrico Nigiotti", "youtubeId": "vJB3xe9Oc1A", "startTime": 0, "duration": 45 }
+    ]
+  },
+  {
+    "id": 9,
+    "name": "Indie",
+    "icon": "👾",
+    "songs": [
+      { "id": 901, "title": "La fine dei vent'anni", "artist": "Motta", "youtubeId": "CYIgLu2Ga_s", "startTime": 0, "duration": 45 },
+      { "id": 902, "title": "Tetris", "artist": "Pinguini Tattici Nucleari", "youtubeId": "_a7b_eJqWsI", "startTime": 0, "duration": 45 },
+      { "id": 903, "title": "Il mondo prima", "artist": "Tre Allegri Ragazzi Morti", "youtubeId": "V3E8T5URCH4", "startTime": 0, "duration": 45 },
+      { "id": 904, "title": "Mancarsi", "artist": "Comacose", "youtubeId": "Z1jZOTmtxZI", "startTime": 0, "duration": 45 },
+      { "id": 905, "title": "Tazza di te", "artist": "Galeffi", "youtubeId": "S6HLySbEsww", "startTime": 0, "duration": 45 }
+    ]
+  },
+  {
+    "id": 10,
+    "name": "MISTERY",
+    "icon": "👾",
+    "songs": [
+      { "id": 1001, "title": "SUPERMAN", "artist": "main theme", "youtubeId": "QmHhIDUrdVA", "startTime": 0, "duration": 45 },
+      { "id": 1002, "title": "il favoloso mondo di Amelie", "artist": "main theme", "youtubeId": "znfYwABeSZ0", "startTime": 0, "duration": 45 },
+      { "id": 1003, "title": "Schindler's list", "artist": "main theme", "youtubeId": "057A1RdssoU", "startTime": 0, "duration": 45 },
+      { "id": 1004, "title": "one upon a time in america", "artist": "main theme", "youtubeId": "o2seI9_MsnM", "startTime": 0, "duration": 45 },
+      { "id": 1005, "title": "Lo Squalo", "artist": "main theme", "youtubeId": "BX3bN5YeiQs", "startTime": 0, "duration": 45 }
     ]
   }
 ]
