@@ -76,7 +76,6 @@
     .btn-perk.malus { background: #ef4444; }
     .btn-perk.used { opacity: 0.3; text-decoration: line-through; filter: grayscale(0.8); }
 
-    /* Control Box Minutaggio & Timer Manuale */
     .minutaggio-box {
       background: #0f172a; border: 2px solid var(--accent); padding: 1rem;
       border-radius: 12px; margin-top: 1rem; text-align: center;
@@ -484,6 +483,16 @@
 
     const BONUS_NAMES = ["INIZIALI", "MINUTAGGIO", "FURTO", "SKIP"];
     const MALUS_NAMES = ["CANTALE", "CATEGORIA", "ZITTO", "4/5"];
+
+    // Funzione Algoritmo Fisher-Yates per mescolare un array in modo equo
+    function shuffleArray(array) {
+      const shuffled = [...array];
+      for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+      }
+      return shuffled;
+    }
 
     // Timer Variables
     let answerTimer = null;
@@ -1005,8 +1014,14 @@
     });
 
     socket.on('categorySelectedForHost', (data) => {
-      currentCategory = categoriesData.find(c => c.id === data.categoryId);
-      if (!currentCategory) return;
+      const rawCategory = categoriesData.find(c => c.id === data.categoryId);
+      if (!rawCategory) return;
+
+      // MESCOLAMENTO CASUALE DELLE CANZONI CON FISHER-YATES
+      currentCategory = {
+        ...rawCategory,
+        songs: shuffleArray(rawCategory.songs)
+      };
 
       const mobileCatEl = document.getElementById('mobileActiveCategory');
       if (mobileCatEl) mobileCatEl.textContent = `${currentCategory.icon} ${currentCategory.name}`;
