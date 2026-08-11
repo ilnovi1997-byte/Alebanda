@@ -998,7 +998,9 @@
       `).join('');
     }
 
+    // FUNZIONE DI AGGIORNAMENTO SEGNAPUNTI DINAMICO
     function updateScoreboard(scores) {
+      if (!scores) return;
       ['scoreA', 'scoreA_p2', 'scoreA_p3', 'winnerScoreA'].forEach(id => {
         const el = document.getElementById(id);
         if (el) el.textContent = scores.A;
@@ -1012,7 +1014,7 @@
     // --- SOCKET EVENTS ---
     socket.on('initGameState', (data) => {
       if (data.teamNames) updateTeamNamesUI(data.teamNames);
-      updateScoreboard(data.scores);
+      if (data.scores) updateScoreboard(data.scores);
       renderQueue(data.buzzerQueue);
       latestPerksState = data.perksState;
       if (data.customStartTimes) customStartTimes = data.customStartTimes;
@@ -1041,6 +1043,11 @@
 
     socket.on('teamNamesUpdated', (names) => {
       updateTeamNamesUI(names);
+    });
+
+    // RICEZIONE AGGIORNAMENTO PUNTEGGI IN TEMPO REALE
+    socket.on('scoreUpdated', (scores) => {
+      updateScoreboard(scores);
     });
 
     socket.on('newSongExtracted', (data) => {
