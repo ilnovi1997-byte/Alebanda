@@ -7,6 +7,8 @@
   <script src="/socket.io/socket.io.js"></script>
   <!-- YouTube IFrame API -->
   <script src="https://www.youtube.com/iframe_api"></script>
+  <!-- Libreria QR Code JS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <style>
     :root {
       --bg: #0f172a;
@@ -28,11 +30,31 @@
     .screen.active { display: flex; flex-direction: column; align-items: center; justify-content: center; }
 
     .brand-title { font-size: 3.5rem; font-weight: 900; color: var(--accent); text-transform: uppercase; letter-spacing: 2px; text-shadow: 0 0 20px rgba(245, 158, 11, 0.4); margin-bottom: 0.5rem; text-align: center; }
-    .brand-subtitle { font-size: 1.2rem; color: var(--text-muted); margin-bottom: 2rem; text-align: center; }
+    .brand-subtitle { font-size: 1.2rem; color: var(--text-muted); margin-bottom: 1.5rem; text-align: center; }
     
     .role-selection { display: flex; gap: 1.5rem; flex-wrap: wrap; justify-content: center; }
     .role-card { background: var(--card-bg); border: 2px solid #334155; padding: 2rem; border-radius: 16px; width: 260px; text-align: center; cursor: pointer; transition: all 0.2s ease; }
     .role-card:hover { border-color: var(--accent); transform: translateY(-4px); }
+
+    /* Box QR Code */
+    .qr-container-box {
+      background: var(--card-bg);
+      border: 1px solid #334155;
+      padding: 1.2rem;
+      border-radius: 16px;
+      margin-bottom: 1.8rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.8rem;
+      text-align: center;
+    }
+    .qr-code-wrapper {
+      background: #ffffff;
+      padding: 12px;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    }
 
     .main-dashboard { width: 100%; max-width: 1100px; display: grid; grid-template-columns: 1fr; gap: 1.5rem; }
     @media (min-width: 850px) {
@@ -136,6 +158,15 @@
   <div id="homeScreen" class="screen active">
     <h1 class="brand-title">ALEBANDA</h1>
     <p class="brand-subtitle">La sfida musicale a squadre</p>
+
+    <!-- BOX CON QR CODE -->
+    <div class="qr-container-box">
+      <h3 style="color: var(--accent); font-size: 1.1rem;">📱 Inquadra per Giocare</h3>
+      <div class="qr-code-wrapper">
+        <div id="qrcode"></div>
+      </div>
+      <small style="color: var(--text-muted); font-size: 0.85rem;">https://alebanda.onrender.com</small>
+    </div>
     
     <div class="role-selection">
       <div class="role-card" onclick="startHostView()">
@@ -149,7 +180,7 @@
     </div>
 
     <!-- BOX PERSONALIZZAZIONE NOMI SQUADRE -->
-    <div style="background: var(--card-bg); padding: 1.2rem; border-radius: 14px; border: 1px solid #334155; margin-top: 2rem; width: 100%; max-width: 540px; text-align: center;">
+    <div style="background: var(--card-bg); padding: 1.2rem; border-radius: 14px; border: 1px solid #334155; margin-top: 1.8rem; width: 100%; max-width: 540px; text-align: center;">
       <h3 style="color: var(--accent); margin-bottom: 0.8rem; font-size: 1.1rem;">✏️ Personalizza Nomi Squadre</h3>
       <div style="display: flex; gap: 10px; justify-content: center; margin-bottom: 0.8rem;">
         <input type="text" id="inputTeamNameA" placeholder="Squadra Rossa" style="flex: 1; padding: 0.6rem; border-radius: 8px; border: 1px solid var(--team-a); background: #0f172a; color: white; text-align: center; font-weight: bold;">
@@ -527,6 +558,19 @@
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
     window.addEventListener('DOMContentLoaded', () => {
+      // Generazione dinamica QR Code
+      const qrcodeContainer = document.getElementById("qrcode");
+      if (qrcodeContainer) {
+        new QRCode(qrcodeContainer, {
+          text: "https://alebanda.onrender.com",
+          width: 150,
+          height: 150,
+          colorDark : "#0f172a",
+          colorLight : "#ffffff",
+          correctLevel : QRCode.CorrectLevel.H
+        });
+      }
+
       const savedName = localStorage.getItem('alebanda_playerName');
       const savedTeamKey = localStorage.getItem('alebanda_playerTeamKey');
 
@@ -1082,7 +1126,6 @@
       if (catScreen) showScreen('categoriesScreen');
     });
 
-    // EVENTO RICEZIONE PROCLAMAZIONE VINCITORE FINALE
     socket.on('gameFinishedWinnerProclaimed', (data) => {
       pauseYouTubeAudio();
       stopTimerManual();
