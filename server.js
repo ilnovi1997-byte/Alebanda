@@ -225,19 +225,44 @@ io.on("connection", (socket) => {
     }
   });
 
-  // 9. FASE 2: FINE ROUND CATEGORIA
+  // 9. FASE 2: FINE ROUND CATEGORIA E PROCLAMAZIONE VINCITORE FINALE
   socket.on("finishCategoryRound", () => {
     turnIndex++;
     const nextTeam = turnPattern[turnIndex] || null;
 
-    io.emit("returnToCategoryGrid", {
-      turnIndex,
-      currentTurnTeam: nextTeam,
-      selectedCategories,
-    });
+    // Se sono state giocate tutte e 10 le categorie (o non ci sono più turni)
+    if (selectedCategories.length >= 10 || !nextTeam) {
+      let winnerText = "";
+      let winnerKey = null;
+
+      if (scores.A > scores.B) {
+        winnerText = `🏆 ${teamNames.A} vince la partita con ${scores.A} punti!`;
+        winnerKey = "A";
+      } else if (scores.B > scores.A) {
+        winnerText = `🏆 ${teamNames.B} vince la partita con ${scores.B} punti!`;
+        winnerKey = "B";
+      } else {
+        winnerText = `🤝 Parità perfetta! Entrambe le squadre hanno totalizzato ${scores.A} punti!`;
+        winnerKey = "DRAW";
+      }
+
+      io.emit("gameFinishedWinnerProclaimed", {
+        winnerText,
+        winnerKey,
+        scores,
+        teamNames,
+      });
+      console.log(`🎉 PARTITA FINITA! ${winnerText}`);
+    } else {
+      io.emit("returnToCategoryGrid", {
+        turnIndex,
+        currentTurnTeam: nextTeam,
+        selectedCategories,
+      });
+    }
   });
 
-  // 10. FASE 2: USO / RIATTIVAZIONE BONUS E MALUS (Toggle ON/OFF)
+  // 10. FASE 2: USO / RIATTIVAZIONE BONUS E MALUS
   socket.on("usePerk", ({ team, type, index }) => {
     if (perksState[team] && perksState[team][type] !== undefined) {
       perksState[team][type][index] = !perksState[team][type][index];
@@ -254,7 +279,7 @@ io.on("connection", (socket) => {
     }
   });
 
-  // 11. BONUS MINUTAGGIO: AGGIORNAMENTO SECONDI DI AVVIO CATEGORIA
+  // 11. BONUS MINUTAGGIO
   socket.on("updateCategoryStartTime", ({ categoryId, newStartTime }) => {
     customStartTimes[categoryId] = parseInt(newStartTime, 10) || 0;
     io.emit("categoryStartTimeUpdated", {

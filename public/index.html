@@ -114,6 +114,17 @@
     .perk-badge.malus-active { background: #7f1d1d; color: #fca5a5; border: 1px solid #dc2626; }
     .perk-badge.malus-used { background: #1e293b; color: #64748b; text-decoration: line-through; }
 
+    /* Schermata Finale Vincitore */
+    .winner-card {
+      background: var(--card-bg); border: 3px solid var(--accent); padding: 2.5rem 1.5rem;
+      border-radius: 20px; text-align: center; max-width: 600px; width: 100%;
+      box-shadow: 0 0 40px rgba(245, 158, 11, 0.3); animation: popIn 0.5s ease-out;
+    }
+    @keyframes popIn {
+      0% { transform: scale(0.8); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
     #yt-player-container { display: none; }
   </style>
 </head>
@@ -183,7 +194,6 @@
           </div>
         </div>
 
-        <!-- Timer Visibile Schermo Host Fase 1 -->
         <div id="timerContainerHostPhase1" class="timer-box" style="display: none;">
           <div style="font-size: 0.85rem; text-transform: uppercase; color: #fca5a5; font-weight: bold;">Tempo Rimanente</div>
           <div class="timer-num" id="timerDisplayHostPhase1">5</div>
@@ -206,7 +216,6 @@
       <div class="game-box">
         <h3>Pannello Controlli Host</h3>
 
-        <!-- Riquadro Timer Manuale Host -->
         <div class="manual-timer-box">
           <h4 style="color: var(--accent); margin-bottom: 0.5rem;">⏱️ Timer Manuale Host</h4>
           <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.6rem;">Imposta un conto alla rovescia a schermo:</p>
@@ -254,7 +263,6 @@
           </div>
         </div>
 
-        <!-- Timer Visibile Schermo Host Fase 2 Grid -->
         <div id="timerContainerHostPhase2Grid" class="timer-box" style="display: none;">
           <div style="font-size: 0.85rem; text-transform: uppercase; color: #fca5a5; font-weight: bold;">Tempo Rimanente</div>
           <div class="timer-num" id="timerDisplayHostPhase2Grid">5</div>
@@ -268,7 +276,6 @@
         <h3>Bonus & Malus Disponibili</h3>
         <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 0.8rem;">Clicca per attivare/disattivare (ON/OFF):</p>
         
-        <!-- Rossa Perks -->
         <div class="perk-box" style="border-color: var(--team-a); margin-bottom: 0.8rem;">
           <div class="perk-title team-name-display-A" style="color: var(--team-a);">SQUADRA ROSSA</div>
           <div class="perk-buttons">
@@ -286,7 +293,6 @@
           </div>
         </div>
 
-        <!-- Blu Perks -->
         <div class="perk-box" style="border-color: var(--team-b);">
           <div class="perk-title team-name-display-B" style="color: var(--team-b);">SQUADRA BLU</div>
           <div class="perk-buttons">
@@ -304,7 +310,6 @@
           </div>
         </div>
 
-        <!-- Pannello Modifica Minutaggio -->
         <div id="minutaggioControlBox" class="minutaggio-box" style="display: none;">
           <h4 style="color: var(--accent); margin-bottom: 0.5rem;">⏱️ BONUS MINUTAGGIO ATTIVO</h4>
           <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.8rem;">Seleziona la categoria e imposta il secondo da cui far partire le canzoni:</p>
@@ -318,7 +323,6 @@
           </div>
         </div>
 
-        <!-- Timer Manuale Host Fase 2 -->
         <div class="manual-timer-box">
           <h4 style="color: var(--accent); margin-bottom: 0.5rem;">⏱️ Timer Manuale Host</h4>
           <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.6rem;">Imposta un conto alla rovescia a schermo:</p>
@@ -382,7 +386,6 @@
           Clicca su <strong>▶️ Riproduci</strong>. Allo scadere dell'anteprima parte il timer di 5 secondi per la risposta.
         </p>
 
-        <!-- Timer Manuale Categoria Attiva -->
         <div class="manual-timer-box">
           <h4 style="color: var(--accent); margin-bottom: 0.5rem;">⏱️ Timer Manuale Host</h4>
           <div style="display: flex; gap: 6px; justify-content: center; align-items: center;">
@@ -396,7 +399,32 @@
     </div>
   </div>
 
-  <!-- 5. SELEZIONE SQUADRA GIOCATORE -->
+  <!-- 5. SCHERMATA FINALE CON PROCLAMAZIONE VINCITORE -->
+  <div id="winnerScreen" class="screen">
+    <div class="winner-card">
+      <h1 style="font-size: 3rem; margin-bottom: 0.5rem;">🎉 FINE PARTITA 🎉</h1>
+      <h2 id="winnerTextDisplay" style="color: var(--accent); margin: 1.5rem 0; font-size: 1.8rem; line-height: 1.4;">
+        Calcolo vincitore...
+      </h2>
+
+      <div style="display: flex; gap: 1rem; justify-content: center; margin: 2rem 0;">
+        <div class="team-score team-a" style="flex: 1;">
+          <div class="team-name-display-A">SQUADRA ROSSA</div>
+          <div class="score-num" id="winnerScoreA">0</div>
+        </div>
+        <div class="team-score team-b" style="flex: 1;">
+          <div class="team-name-display-B">SQUADRA BLU</div>
+          <div class="score-num" id="winnerScoreB">0</div>
+        </div>
+      </div>
+
+      <button class="btn-score" style="background: var(--accent); color: black; font-size: 1.2rem; padding: 1rem 2rem; width: 100%; border-radius: 12px;" onclick="resetFullGame()">
+        🔄 Gioca Un'Altra Partita
+      </button>
+    </div>
+  </div>
+
+  <!-- 6. SELEZIONE SQUADRA GIOCATORE -->
   <div id="playerSetupScreen" class="screen">
     <div class="mobile-container">
       <h2 style="margin-bottom: 1.5rem;">Entra in Gioco</h2>
@@ -406,7 +434,7 @@
     </div>
   </div>
 
-  <!-- 6. DISPLAY GIOCATORE -->
+  <!-- 7. DISPLAY GIOCATORE -->
   <div id="playerBuzzerScreen" class="screen">
     <div class="mobile-container">
       <h2 id="playerInfoDisplay" style="margin-bottom: 0.2rem;"></h2>
@@ -484,7 +512,6 @@
     const BONUS_NAMES = ["INIZIALI", "MINUTAGGIO", "FURTO", "SKIP"];
     const MALUS_NAMES = ["CANTALE", "CATEGORIA", "ZITTO", "4/5"];
 
-    // Funzione Algoritmo Fisher-Yates per mescolare un array in modo equo
     function shuffleArray(array) {
       const shuffled = [...array];
       for (let i = shuffled.length - 1; i > 0; i--) {
@@ -928,11 +955,11 @@
     }
 
     function updateScoreboard(scores) {
-      ['scoreA', 'scoreA_p2', 'scoreA_p3'].forEach(id => {
+      ['scoreA', 'scoreA_p2', 'scoreA_p3', 'winnerScoreA'].forEach(id => {
         const el = document.getElementById(id);
         if (el) el.textContent = scores.A;
       });
-      ['scoreB', 'scoreB_p2', 'scoreB_p3'].forEach(id => {
+      ['scoreB', 'scoreB_p2', 'scoreB_p3', 'winnerScoreB'].forEach(id => {
         const el = document.getElementById(id);
         if (el) el.textContent = scores.B;
       });
@@ -1017,7 +1044,6 @@
       const rawCategory = categoriesData.find(c => c.id === data.categoryId);
       if (!rawCategory) return;
 
-      // MESCOLAMENTO CASUALE DELLE CANZONI CON FISHER-YATES
       currentCategory = {
         ...rawCategory,
         songs: shuffleArray(rawCategory.songs)
@@ -1054,6 +1080,18 @@
       if (mobileCatEl) mobileCatEl.textContent = "In attesa di selezione...";
       const catScreen = document.getElementById('categoriesScreen');
       if (catScreen) showScreen('categoriesScreen');
+    });
+
+    // EVENTO RICEZIONE PROCLAMAZIONE VINCITORE FINALE
+    socket.on('gameFinishedWinnerProclaimed', (data) => {
+      pauseYouTubeAudio();
+      stopTimerManual();
+      updateScoreboard(data.scores);
+
+      const winnerTextEl = document.getElementById('winnerTextDisplay');
+      if (winnerTextEl) winnerTextEl.textContent = data.winnerText;
+
+      showScreen('winnerScreen');
     });
 
     socket.on('perkUpdated', (perksState) => {
