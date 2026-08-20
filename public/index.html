@@ -136,7 +136,6 @@
     .perk-badge.malus-active { background: #7f1d1d; color: #fca5a5; border: 1px solid #dc2626; }
     .perk-badge.malus-used { background: #1e293b; color: #64748b; text-decoration: line-through; }
 
-    /* Schermata Finale Vincitore */
     .winner-card {
       background: var(--card-bg); border: 3px solid var(--accent); padding: 2.5rem 1.5rem;
       border-radius: 20px; text-align: center; max-width: 600px; width: 100%;
@@ -159,7 +158,6 @@
     <h1 class="brand-title">ALEBANDA</h1>
     <p class="brand-subtitle">La sfida musicale a squadre</p>
 
-    <!-- BOX CON QR CODE -->
     <div class="qr-container-box">
       <h3 style="color: var(--accent); font-size: 1.1rem;">📱 Inquadra per Giocare</h3>
       <div class="qr-code-wrapper">
@@ -179,7 +177,6 @@
       </div>
     </div>
 
-    <!-- BOX PERSONALIZZAZIONE NOMI SQUADRE -->
     <div style="background: var(--card-bg); padding: 1.2rem; border-radius: 14px; border: 1px solid #334155; margin-top: 1.8rem; width: 100%; max-width: 540px; text-align: center;">
       <h3 style="color: var(--accent); margin-bottom: 0.8rem; font-size: 1.1rem;">✏️ Personalizza Nomi Squadre</h3>
       <div style="display: flex; gap: 10px; justify-content: center; margin-bottom: 0.8rem;">
@@ -557,8 +554,18 @@
     let timeLeft = 5;
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
+    // RICONNESSIONE AUTOMATICA: Re-invia nome e squadra se il telefono si riconnette
+    socket.on('connect', () => {
+      const savedName = localStorage.getItem('alebanda_playerName');
+      const savedTeamKey = localStorage.getItem('alebanda_playerTeamKey');
+      if (savedName && savedTeamKey) {
+        myName = savedName;
+        myTeamKey = savedTeamKey;
+        socket.emit('registerPlayer', { name: myName, teamKey: myTeamKey });
+      }
+    });
+
     window.addEventListener('DOMContentLoaded', () => {
-      // Generazione dinamica QR Code
       const qrcodeContainer = document.getElementById("qrcode");
       if (qrcodeContainer) {
         new QRCode(qrcodeContainer, {
@@ -969,9 +976,14 @@
       showScreen('homeScreen');
     }
 
+    // BUZZ CON INVIO DIRETTO DEL NOME E SQUADRA
     function pressBuzzer() {
       if (hasBuzzed || isPhase2Active) return;
-      socket.emit('pressBuzzer');
+      
+      const currentName = myName || localStorage.getItem('alebanda_playerName') || 'Giocatore';
+      const currentKey = myTeamKey || localStorage.getItem('alebanda_playerTeamKey') || 'A';
+
+      socket.emit('pressBuzzer', { name: currentName, teamKey: currentKey });
       hasBuzzed = true;
       document.getElementById('buzzerBtn').classList.add('disabled');
       document.getElementById('playerStatus').textContent = 'Ti sei prenotato!';
@@ -998,7 +1010,7 @@
       `).join('');
     }
 
-    // FUNZIONE DI AGGIORNAMENTO SEGNAPUNTI DINAMICO
+    // AGGIORNAMENTO SEGNAPUNTI DINAMICO
     function updateScoreboard(scores) {
       if (!scores) return;
       ['scoreA', 'scoreA_p2', 'scoreA_p3', 'winnerScoreA'].forEach(id => {
@@ -1045,7 +1057,6 @@
       updateTeamNamesUI(names);
     });
 
-    // RICEZIONE AGGIORNAMENTO PUNTEGGI IN TEMPO REALE
     socket.on('scoreUpdated', (scores) => {
       updateScoreboard(scores);
     });

@@ -73,21 +73,28 @@ io.on("connection", (socket) => {
 
   // 1. REGISTRAZIONE GIOCATORE
   socket.on("registerPlayer", (data) => {
+    if (!data) return;
     socket.data.playerName = data.name || "Giocatore";
-    socket.data.teamKey = data.teamKey; // 'A' o 'B'
+    socket.data.teamKey = data.teamKey || "A";
     socket.data.team =
-      teamNames[data.teamKey] ||
-      (data.teamKey === "A" ? teamNames.A : teamNames.B);
+      teamNames[socket.data.teamKey] ||
+      (socket.data.teamKey === "A" ? teamNames.A : teamNames.B);
     console.log(
       `👤 Registrato: ${socket.data.playerName} (${socket.data.team})`,
     );
   });
 
-  // 2. PRESSIONE BUZZER (Fase 1)
-  socket.on("pressBuzzer", () => {
-    const teamKey = socket.data.teamKey || "A";
+  // 2. PRESSIONE BUZZER (Fase 1) - Con recupero dati da payload e da socket
+  socket.on("pressBuzzer", (data) => {
+    if (data && data.name) socket.data.playerName = data.name;
+    if (data && data.teamKey) {
+      socket.data.teamKey = data.teamKey;
+      socket.data.team = teamNames[data.teamKey];
+    }
+
+    const teamKey = socket.data.teamKey || (data && data.teamKey) || "A";
     const team = teamNames[teamKey] || "Senza Squadra";
-    const name = socket.data.playerName || "Giocatore";
+    const name = socket.data.playerName || (data && data.name) || "Giocatore";
 
     const alreadyBuzzed = buzzerQueue.some(
       (item) => item.socketId === socket.id,
@@ -225,12 +232,11 @@ io.on("connection", (socket) => {
     }
   });
 
-  // 9. FASE 2: FINE ROUND CATEGORIA E PROCLAMAZIONE VINCITORE FINALE
+  // 9. FASE 2: FINE ROUND CATEGORIA E PROCLAMAZIONE VINCITORE
   socket.on("finishCategoryRound", () => {
     turnIndex++;
     const nextTeam = turnPattern[turnIndex] || null;
 
-    // Se sono state giocate tutte e 10 le categorie (o non ci sono più turni)
     if (selectedCategories.length >= 10 || !nextTeam) {
       let winnerText = "";
       let winnerKey = null;
@@ -291,7 +297,7 @@ io.on("connection", (socket) => {
     );
   });
 
-  // 12. SINCRONIZZAZIONE TIMER PERSONALIZZATO HOST
+  // 12. TIMER HOST
   socket.on("triggerTimerStart", (data) => {
     const seconds = data && data.duration ? parseInt(data.duration, 10) : 5;
     io.emit("startTimerOnClients", { duration: seconds });
@@ -301,7 +307,7 @@ io.on("connection", (socket) => {
     io.emit("stopTimerOnClients");
   });
 
-  // 13. RESET COMPLETO DI TUTTA LA PARTITA
+  // 13. RESET COMPLETO PARTITA
   socket.on("resetFullGame", () => {
     scores = { A: 0, B: 0 };
     playedSongIds = [];
