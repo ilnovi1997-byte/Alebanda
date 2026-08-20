@@ -5,9 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Alebanda - Il Gioco Musicale</title>
   <script src="/socket.io/socket.io.js"></script>
-  <!-- YouTube IFrame API -->
   <script src="https://www.youtube.com/iframe_api"></script>
-  <!-- Libreria QR Code JS -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <style>
     :root {
@@ -36,7 +34,6 @@
     .role-card { background: var(--card-bg); border: 2px solid #334155; padding: 2rem; border-radius: 16px; width: 260px; text-align: center; cursor: pointer; transition: all 0.2s ease; }
     .role-card:hover { border-color: var(--accent); transform: translateY(-4px); }
 
-    /* Box QR Code */
     .qr-container-box {
       background: var(--card-bg);
       border: 1px solid #334155;
@@ -89,7 +86,6 @@
     .category-icon { font-size: 2.2rem; }
     .category-name { font-size: 1rem; font-weight: bold; color: #fff; }
 
-    /* Bonus & Malus Styles */
     .perk-box { background: #0f172a; padding: 0.8rem; border-radius: 10px; border: 1px solid #334155; text-align: center; }
     .perk-title { font-size: 0.85rem; font-weight: bold; margin-bottom: 0.5rem; text-transform: uppercase; }
     .perk-buttons { display: flex; gap: 6px; justify-content: center; flex-wrap: wrap; }
@@ -369,7 +365,7 @@
     </div>
   </div>
 
-  <!-- 4. SCHERMATA CATEGORIA ATTIVA (5 CANZONI PER HOST) -->
+  <!-- 4. SCHERMATA CATEGORIA ATTIVA -->
   <div id="activeCategoryScreen" class="screen">
     <div class="main-dashboard">
       <div class="game-box">
@@ -427,7 +423,7 @@
     </div>
   </div>
 
-  <!-- 5. SCHERMATA FINALE CON PROCLAMAZIONE VINCITORE -->
+  <!-- 5. SCHERMATA FINALE VINCITORE -->
   <div id="winnerScreen" class="screen">
     <div class="winner-card">
       <h1 style="font-size: 3rem; margin-bottom: 0.5rem;">🎉 FINE PARTITA 🎉</h1>
@@ -549,12 +545,10 @@
       return shuffled;
     }
 
-    // Timer Variables
     let answerTimer = null;
     let timeLeft = 5;
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
-    // RICONNESSIONE AUTOMATICA: Re-invia nome e squadra se il telefono si riconnette
     socket.on('connect', () => {
       const savedName = localStorage.getItem('alebanda_playerName');
       const savedTeamKey = localStorage.getItem('alebanda_playerTeamKey');
@@ -584,9 +578,7 @@
       if (savedName && savedTeamKey) {
         myName = savedName;
         myTeamKey = savedTeamKey;
-        
         socket.emit('registerPlayer', { name: myName, teamKey: myTeamKey });
-
         updatePlayerProfileDisplay();
         showScreen('playerBuzzerScreen');
       }
@@ -595,16 +587,14 @@
     function saveCustomTeamNames() {
       const nameA = document.getElementById('inputTeamNameA').value.trim();
       const nameB = document.getElementById('inputTeamNameB').value.trim();
-
       if (!nameA && !nameB) return alert("Inserisci almeno un nome per la squadra!");
 
       socket.emit('updateTeamNames', { A: nameA, B: nameB });
-      alert("Nomi delle squadre aggiornati con successo!");
+      alert("Nomi aggiornati con successo!");
     }
 
     function updateTeamNamesUI(names) {
       teamNames = names;
-
       document.querySelectorAll('.team-name-display-A').forEach(el => {
         if (el.tagName === 'BUTTON') el.textContent = `Entra nei ${names.A}`;
         else el.textContent = names.A;
@@ -678,7 +668,7 @@
     function startCustomTimer(inputId) {
       const input = document.getElementById(inputId);
       const seconds = input ? parseInt(input.value, 10) : 5;
-      if (isNaN(seconds) || seconds <= 0) return alert("Inserisci un numero di secondi valido!");
+      if (isNaN(seconds) || seconds <= 0) return alert("Inserisci secondi validi!");
       
       socket.emit('triggerTimerStart', { duration: seconds });
     }
@@ -731,12 +721,11 @@
     }
 
     function resetFullGame() {
-      if (confirm("Sei sicuro di voler azzerare tutti i punteggi, le categorie e ricominciare da capo?")) {
+      if (confirm("Azzerare tutta la partita e ricominciare?")) {
         socket.emit('resetFullGame');
       }
     }
 
-    // --- CONTROLLI AUDIO ---
     function triggerNextSong() {
       pauseYouTubeAudio();
       stopTimerManual();
@@ -813,7 +802,6 @@
       socket.emit('resetBuzzerQueue');
     }
 
-    // --- FASE 2: CATEGORIE & PERKS ---
     function goToPhase2() {
       socket.emit('startPhase2');
     }
@@ -880,11 +868,7 @@
       const box = document.getElementById('minutaggioControlBox');
 
       if (box) {
-        if (isMinutaggioActiveA || isMinutaggioActiveB) {
-          box.style.display = 'block';
-        } else {
-          box.style.display = 'none';
-        }
+        box.style.display = (isMinutaggioActiveA || isMinutaggioActiveB) ? 'block' : 'none';
       }
     }
 
@@ -906,14 +890,11 @@
       const categoryId = parseInt(select.value, 10);
       const newStartTime = parseInt(input.value, 10);
 
-      if (isNaN(newStartTime) || newStartTime < 0) {
-        alert("Inserisci un numero di secondi valido (es. 30, 45, 60)");
-        return;
-      }
+      if (isNaN(newStartTime) || newStartTime < 0) return alert("Inserisci secondi validi!");
 
       socket.emit('updateCategoryStartTime', { categoryId, newStartTime });
       const cat = categoriesData.find(c => c.id === categoryId);
-      alert(`⏱️ Minutaggio di avvio impostato a ${newStartTime}s per la categoria "${cat.name}"!`);
+      alert(`⏱️ Start a ${newStartTime}s impostato per "${cat.name}"!`);
       input.value = '';
     }
 
@@ -950,7 +931,6 @@
       }).join('');
     }
 
-    // --- LOGICA GIOCATORE ---
     function joinTeam(teamCode) {
       const nameInput = document.getElementById('playerNameInput').value.trim();
       if (!nameInput) return alert("Inserisci il tuo nome!");
@@ -976,7 +956,6 @@
       showScreen('homeScreen');
     }
 
-    // BUZZ CON INVIO DIRETTO DEL NOME E SQUADRA
     function pressBuzzer() {
       if (hasBuzzed || isPhase2Active) return;
       
@@ -1010,7 +989,6 @@
       `).join('');
     }
 
-    // AGGIORNAMENTO SEGNAPUNTI DINAMICO
     function updateScoreboard(scores) {
       if (!scores) return;
       ['scoreA', 'scoreA_p2', 'scoreA_p3', 'winnerScoreA'].forEach(id => {
@@ -1023,7 +1001,6 @@
       });
     }
 
-    // --- SOCKET EVENTS ---
     socket.on('initGameState', (data) => {
       if (data.teamNames) updateTeamNamesUI(data.teamNames);
       if (data.scores) updateScoreboard(data.scores);
@@ -1224,8 +1201,7 @@
       if (btnPhase2) btnPhase2.style.display = 'none';
 
       showScreen('homeScreen');
-
-      alert("La partita è stata azzerata! È possibile iniziare una nuova partita.");
+      alert("La partita è stata azzerata!");
     });
   </script>
 </body>
